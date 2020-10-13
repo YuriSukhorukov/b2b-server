@@ -2,7 +2,7 @@
 FROM golang:alpine
 
 # install
-# RUN apk add --no-cache go
+RUN apk update && apk add --no-cache git
 
 WORKDIR /go/src/app
 
