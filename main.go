@@ -10,11 +10,14 @@ import (
 func main() {
 	r := gin.Default()
 
-	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "I'm b2b server!")
-	})
+	v1 := r.Group("/api/v1")
+	{
+		v1.GET("/", func(c *gin.Context) {
+			c.String(http.StatusOK, "I'm b2b server!")
+		})
+	}
 
-	r.Run()
+	r.Run(":8080")
 
 	fmt.Println("b2b server started")
 }
