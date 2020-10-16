@@ -1,23 +1,22 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"github.com/b2b-server/controller/api/v1"
 )
 
 func main() {
 	r := gin.Default()
 
-	v1 := r.Group("/api/v1")
+	c := controller.NewController()
+
+	v1 := r.Group("/api/v1") 
 	{
-		v1.GET("/", func(c *gin.Context) {
-			c.String(http.StatusOK, "I'm b2b server!")
-		})
+		accounts := v1.Group("/accounts")
+		{
+			accounts.GET("", c.AddAccount)
+		}
 	}
 
 	r.Run(":8080")
-
-	fmt.Println("b2b server started")
 }
