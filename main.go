@@ -16,6 +16,15 @@ func main() {
 		{
 			accounts.GET("", c.AddAccount)
 		}
+
+		auth := v1.Group("/auth")
+		{
+			auth.GET("email_free", c.EmailFree)
+			auth.GET("signup", c.SignUp)
+			auth.GET("signin", c.SignIn)
+			auth.GET("signout", c.SignOut)
+			auth.GET("verify", c.Verify)
+		}
 	}
 
 	r.Run(":8080")
