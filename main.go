@@ -25,6 +25,11 @@ func main() {
 			auth.GET("signout", c.SignOut)
 			auth.GET("verify", c.Verify)
 		}
+
+		examples := v1.Group("/examples")
+		{
+			examples.GET("ping", c.PingExample)
+		}
 	}
 
 	r.Run(":8080")
