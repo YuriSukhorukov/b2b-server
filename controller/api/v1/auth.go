@@ -18,7 +18,7 @@ import (
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /auth/email_free/{email} [get]
 func (c *Controller) EmailFree(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, model.Success{})
+	ctx.JSON(http.StatusOK, model.Success{Success: true})
 }
 
 func (c *Controller) SignUp(ctx *gin.Context) {
