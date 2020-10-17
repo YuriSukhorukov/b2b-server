@@ -1,8 +1,11 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
+
 	"github.com/gin-gonic/gin"
+
 	"github.com/b2b-server/model"
 )
 
@@ -18,7 +21,13 @@ import (
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /auth/email_free/{email} [get]
 func (c *Controller) EmailFree(ctx *gin.Context) {
+	email := ctx.Param("email")
+	fmt.Printf("email: %s\n", email)
 	ctx.JSON(http.StatusOK, model.Success{Success: true})
+	// if err != nil {
+	// 	ctx.JSON(http.StatusOK, model.Error{Success: false, Error: "Something wrong"})
+	// 	return
+	// }
 }
 
 func (c *Controller) SignUp(ctx *gin.Context) {
