@@ -51,7 +51,7 @@ func (c *Controller) SignUp(ctx *gin.Context) {
 
 	fmt.Printf("%#v\n", h)
 	ctx.JSON(200, model.Success{Success: true})
-	// ctx.JSON(200, gin.H{"Email": h.Email, "Password": h.Password})
+	// ctx.JSON(200, gin.H{"email": h.Email, "password": h.Password})
 }
 
 func (c *Controller) SignIn(ctx *gin.Context) {
