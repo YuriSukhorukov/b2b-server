@@ -58,11 +58,6 @@ func main() {
 
 	v1 := r.Group("/api/v1") 
 	{
-		accounts := v1.Group("/accounts")
-		{
-			accounts.GET("", c.AddAccount)
-		}
-
 		auth := v1.Group("/auth")
 		{
 			auth.GET("email_free/:email", c.EmailFree)
