@@ -9,7 +9,7 @@ import (
 	"github.com/b2b-server/model"
 )
 
-// PingExample godoc
+// EmailFree godoc
 // @Summary Возвращает результат проверки доступности e-mail для регистрации
 // @Description Возвращает результат проверки доступности e-mail для регистрации
 // @Tags auth
@@ -23,15 +23,35 @@ import (
 func (c *Controller) EmailFree(ctx *gin.Context) {
 	email := ctx.Param("email")
 	fmt.Printf("email: %s\n", email)
-	ctx.JSON(http.StatusOK, model.Success{Success: true})
+	ctx.JSON(200, model.Success{Success: true})
 	// if err != nil {
-	// 	ctx.JSON(http.StatusOK, model.Error{Success: false, Error: "Something wrong"})
+	// 	ctx.JSON(200, model.Error{Success: false, Error: err.Error()})
 	// 	return
 	// }
 }
 
+// SignUp godoc
+// @Summary Добавляет нового пользователя
+// @Description Возвращает результат операции добавленя нового пользователя
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param email header string true "Email"
+// @Param password header string true "Password"
+// @Success 201 {object} model.Success "Успешное выполнение операции"
+// @Success 400 {object} model.Error "Email занят для регистрации"
+// @Failure 500 {object} model.Error "Ошибка сервера"
+// @Router /auth/signup [post]
 func (c *Controller) SignUp(ctx *gin.Context) {
-	ctx.String(http.StatusOK, "Ok")
+	h := model.SignupHeader{}
+
+	if err := ctx.ShouldBindHeader(&h); err != nil {
+		ctx.JSON(200, model.Error{Success: false, Error: err.Error()})
+	}
+
+	fmt.Printf("%#v\n", h)
+	ctx.JSON(200, model.Success{Success: true})
+	// ctx.JSON(200, gin.H{"Email": h.Email, "Password": h.Password})
 }
 
 func (c *Controller) SignIn(ctx *gin.Context) {

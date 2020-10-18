@@ -61,10 +61,10 @@ func main() {
 		auth := v1.Group("/auth")
 		{
 			auth.GET("email_free/:email", c.EmailFree)
-			auth.GET("signup", c.SignUp)
-			auth.GET("signin", c.SignIn)
-			auth.GET("signout", c.SignOut)
-			auth.GET("verify", c.Verify)
+			auth.POST("signup", c.SignUp)
+			auth.POST("signin", c.SignIn)
+			auth.POST("signout", c.SignOut)
+			auth.POST("verify", c.Verify)
 		}
 	}
 
