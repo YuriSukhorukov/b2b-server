@@ -43,7 +43,7 @@ func (c *Controller) EmailFree(ctx *gin.Context) {
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /auth/signup [post]
 func (c *Controller) SignUp(ctx *gin.Context) {
-	h := model.SignupHeader{}
+	h := model.AuthHeader{}
 
 	if err := ctx.ShouldBindHeader(&h); err != nil {
 		ctx.JSON(200, model.Error{Success: false, Error: err.Error()})
@@ -54,8 +54,27 @@ func (c *Controller) SignUp(ctx *gin.Context) {
 	// ctx.JSON(200, gin.H{"email": h.Email, "password": h.Password})
 }
 
+// SignIn godoc
+// @Summary Добавляет сессию пользователя
+// @Description Возвращает результат операции добавленя сессии пользователя
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param email header string true "Email"
+// @Param password header string true "Password"
+// @Success 201 {object} model.Success "Успешное выполнение операции"
+// @Success 400 {object} model.Error "Email занят для регистр
+// @Failure 500 {object} model.Error "Ошибка сервера"
+// @Router /auth/signin [post]
 func (c *Controller) SignIn(ctx *gin.Context) {
-	ctx.String(http.StatusOK, "Ok")
+	h := model.AuthHeader{}
+
+	if err := ctx.ShouldBindHeader(&h); err != nil {
+		ctx.JSON(200, model.Error{Success: false, Error: err.Error()})
+	}
+
+	fmt.Printf("%#v\n", h)
+	ctx.JSON(200, model.Success{Success: true})
 }
 
 func (c *Controller) SignOut(ctx *gin.Context) {

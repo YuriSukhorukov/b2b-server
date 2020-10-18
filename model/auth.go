@@ -1,6 +1,6 @@
 package model
 
-type SignupHeader struct {
+type AuthHeader struct {
 	Email   	string    	`header:"email"`
 	Password 	string 		`header:"password"`
 }
