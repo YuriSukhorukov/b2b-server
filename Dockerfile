@@ -1,4 +1,4 @@
-FROM golang:alpine
+FROM golang:alpine AS builder
 
 RUN apk update && apk add --no-cache git
 
@@ -12,9 +12,12 @@ RUN go get -u github.com/swaggo/swag/cmd/swag
 RUN export PATH=$(go env GOPATH)/bin:$PATH
 RUN swag init
 
-RUN go build main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
 ENV PORT 8080
 EXPOSE 8080
 
+FROM scratch AS final
+
+COPY --from=builder /go/src/app/main .
 ENTRYPOINT ["./main"]
