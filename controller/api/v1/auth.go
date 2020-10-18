@@ -55,15 +55,15 @@ func (c *Controller) SignUp(ctx *gin.Context) {
 }
 
 // SignIn godoc
-// @Summary Добавляет сессию пользователя
-// @Description Возвращает результат операции добавленя сессии пользователя
+// @Summary Добавляет HttpOnly Cookie JWT пользователя
+// @Description Возвращает результат операции создания HttpOnly Cookie JWT пользователя при авторизации
 // @Tags auth
 // @Accept json
 // @Produce json
 // @Param email header string true "Email"
 // @Param password header string true "Password"
-// @Success 201 {object} model.Success "Успешное выполнение операции"
-// @Success 400 {object} model.Error "Email занят для регистр
+// @Success 200 {object} model.Success "Успешное выполнение операции"
+// @Success 400 {object} model.Error "Пользователь с таким Email не существует"
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /auth/signin [post]
 func (c *Controller) SignIn(ctx *gin.Context) {
@@ -77,10 +77,29 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 	ctx.JSON(200, model.Success{Success: true})
 }
 
+// SignOut godoc
+// @Summary Удаляет HttpOnly Cookie JWT пользователя
+// @Description Возвращает результат операции удаления HttpOnly Cookie JWT пользователя
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} model.Success "Успешное выполнение операции"
+// @Failure 500 {object} model.Error "Ошибка сервера"
+// @Router /auth/signout [delete]
 func (c *Controller) SignOut(ctx *gin.Context) {
 	ctx.String(http.StatusOK, "Ok")
 }
 
+// SignOut godoc
+// @Summary Удаляет JWT пользователя
+// @Description Возвращает результат операции проверки HttpOnly Cookie JWT пользователя
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} model.Success "Успешное выполнение операции"
+// @Success 400 {object} model.Error "Неудачная валидация HttpOnly Cookie JWT"
+// @Failure 500 {object} model.Error "Ошибка сервера"
+// @Router /auth/verify [post]
 func (c *Controller) Verify(ctx *gin.Context) {
 	ctx.String(http.StatusOK, "Ok")
 }

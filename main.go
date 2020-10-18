@@ -63,7 +63,7 @@ func main() {
 			auth.GET("email_free/:email", c.EmailFree)
 			auth.POST("signup", c.SignUp)
 			auth.POST("signin", c.SignIn)
-			auth.POST("signout", c.SignOut)
+			auth.DELETE("signout", c.SignOut)
 			auth.POST("verify", c.Verify)
 		}
 	}

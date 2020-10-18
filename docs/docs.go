@@ -79,7 +79,7 @@ var doc = `{
         },
         "/auth/signin": {
             "post": {
-                "description": "Возвращает результат операции добавленя сессии пользователя",
+                "description": "Возвращает результат операции создания HttpOnly Cookie JWT пользователя при авторизации",
                 "consumes": [
                     "application/json"
                 ],
@@ -89,7 +89,7 @@ var doc = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Добавляет сессию пользователя",
+                "summary": "Добавляет HttpOnly Cookie JWT пользователя",
                 "parameters": [
                     {
                         "type": "string",
@@ -107,16 +107,45 @@ var doc = `{
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Успешное выполнение операции",
                         "schema": {
                             "$ref": "#/definitions/model.Success"
                         }
                     },
                     "400": {
-                        "description": "Email занят для регистрации",
+                        "description": "Пользователь с таким Email не существует",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/signout": {
+            "delete": {
+                "description": "Возвращает результат операции удаления HttpOnly Cookie JWT пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Удаляет HttpOnly Cookie JWT пользователя",
+                "responses": {
+                    "200": {
+                        "description": "Успешное выполнение операции",
+                        "schema": {
+                            "$ref": "#/definitions/model.Success"
                         }
                     },
                     "500": {
@@ -166,6 +195,41 @@ var doc = `{
                     },
                     "400": {
                         "description": "Email занят для регистрации",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/verify": {
+            "post": {
+                "description": "Возвращает результат операции проверки HttpOnly Cookie JWT пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Удаляет JWT пользователя",
+                "responses": {
+                    "200": {
+                        "description": "Успешное выполнение операции",
+                        "schema": {
+                            "$ref": "#/definitions/model.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Неудачная валидация HttpOnly Cookie JWT",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }
