@@ -28,6 +28,7 @@ func (c *Controller) EmailFree(ctx *gin.Context) {
 	// 	ctx.JSON(200, model.Error{Success: false, Error: err.Error()})
 	// 	return
 	// }
+	c.Repository.StoreAccount()
 }
 
 // SignUp godoc

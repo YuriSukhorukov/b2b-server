@@ -7,6 +7,8 @@ import (
 	_ "github.com/b2b-server/docs"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+
+	"github.com/b2b-server/repository"
 )
 
 // @title Swagger Example API
@@ -52,11 +54,11 @@ import (
 // @scope.admin Grants read and write access to administrative information
 
 func main() {
-	r := gin.Default()
+	g 	:= gin.Default()
+	r 	:= repository.NewRepository()
+	c 	:= controller.NewController(*r)
 
-	c := controller.NewController()
-
-	v1 := r.Group("/api/v1") 
+	v1 := g.Group("/api/v1") 
 	{
 		auth := v1.Group("/auth")
 		{
@@ -68,6 +70,6 @@ func main() {
 		}
 	}
 
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	r.Run(":8080")
+	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	g.Run(":8080")
 }

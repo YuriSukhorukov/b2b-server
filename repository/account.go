@@ -1,11 +1,16 @@
 package repository
 
-import models "github.com/b2b-server/model"
+import (
+	"fmt"
+)
 
-type AccountRepository interface {
-	Fetch(cursor string, num int64) ([]*models.Article, error)
-	GetByID(id int64) (*models.Article, error)
-	Update(article *models.Article) (*models.Article, error)
-	Store(a *models.Article) (int64, error)
-	Delete(id int64) (bool, error)
+func (r Repository) StoreAccount() {
+    fmt.Println("Repository: Store()")
+    fmt.Println(r.postgresql)
+    fmt.Println(r.cassandra)
+    fmt.Println(r.hbase)
+}
+
+func (r Repository) FetchAccount() {
+    fmt.Println("Repository: Fetch()")
 }
