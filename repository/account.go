@@ -3,21 +3,24 @@ package repository
 import (
 	"fmt"
 	"log"
+	"github.com/jmoiron/sqlx"
 )
 
-func (r Repository) InsertAccount() {
-    fmt.Println("Repository: Store()")
+type AccountRepository struct {
+	db *sqlx.DB
+}
 
-    fmt.Println(r.postgresql)
-    fmt.Println(r.cassandra)
-    fmt.Println(r.hbase)
+func (r AccountRepository) Insert() {
+    fmt.Println("AccountRepository: Store()")
 
-    err := r.postgresql.Ping()
+    fmt.Println(r.db)
+
+    err := r.db.Ping()
 	if err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func (r Repository) FetchAccount() {
-    fmt.Println("Repository: Fetch()")
+func (r AccountRepository) Fetch() {
+    fmt.Println("AccountRepository: Fetch()")
 }

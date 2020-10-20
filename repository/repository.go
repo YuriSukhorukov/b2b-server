@@ -2,17 +2,18 @@ package repository
 
 import (
 	"github.com/b2b-server/service"
-	"github.com/jmoiron/sqlx"
 )
 
 type Repository struct {
-	postgresql *sqlx.DB
-	cassandra string
-	hbase string
+	Accounts 	AccountRepository
+	Offers 		OfferRepository
 }
 
 func NewRepository() *Repository {
- 	psql := service.NewPostgresql()
+	psgql 		:= service.NewPostgresql()
 
-	return &Repository{psql, "csdr", "hb"}
+	accounts 	:= AccountRepository{psgql}
+	offers		:= OfferRepository{psgql}
+
+	return &Repository{accounts, offers}
 }
