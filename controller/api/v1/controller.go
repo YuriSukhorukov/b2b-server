@@ -4,7 +4,7 @@ import "github.com/b2b-server/repository"
 
 // Controller example
 type Controller struct {
-	Repository repository.Repository
+	repository repository.Repository
 }
 
 // NewController example
