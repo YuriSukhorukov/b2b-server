@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func (r Repository) StoreAccount() {
+func (r Repository) InsertAccount() {
     fmt.Println("Repository: Store()")
 
     fmt.Println(r.postgresql)
