@@ -8,16 +8,16 @@ import (
 	"github.com/b2b-server/model"
 )
 
-type AccountRepository struct {
+type UserRepository struct {
 	db *sqlx.DB
 }
 
-func NewAccountRepository(db *sqlx.DB) *AccountRepository {
-	return &AccountRepository{db}
+func NewUserRepository(db *sqlx.DB) *UserRepository {
+	return &UserRepository{db}
 }
 
-func (r AccountRepository) IsEmailFree(email string) (error, bool) {
-	a := model.Account{}
+func (r UserRepository) IsEmailFree(email string) (error, bool) {
+	a := model.User{}
 	s := `
 		SELECT email FROM users
         WHERE email=$1
@@ -34,8 +34,8 @@ func (r AccountRepository) IsEmailFree(email string) (error, bool) {
 	return err, false
 }
 
-func (r AccountRepository) Insert() {
-    fmt.Println("AccountRepository: Store()")
+func (r UserRepository) Insert() {
+    fmt.Println("UserRepository: Store()")
 
     fmt.Println(r.db)
 
@@ -54,7 +54,7 @@ func (r AccountRepository) Insert() {
 	// }
 	// fmt.Println(result)
 
-	a := model.Account{}
+	a := model.User{}
 	err = r.db.Get(&a, `
 		SELECT email FROM users
         WHERE email='user_xxx@gmail.com'

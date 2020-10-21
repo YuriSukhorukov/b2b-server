@@ -22,7 +22,7 @@ import (
 // @Router /auth/email_free/{email} [get]
 func (c *Controller) EmailFree(ctx *gin.Context) {
 	email 				:= ctx.Param("email")
-	err, result 		:= c.AccountRepository.IsEmailFree(email)
+	err, result 		:= c.UserRepository.IsEmailFree(email)
 	
 	if err != nil {
 		fmt.Printf(err.Error())
@@ -79,7 +79,7 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 		ctx.JSON(200, model.Error{Success: false, Error: err.Error()})
 	}
 
-	c.AccountRepository.Insert()
+	c.UserRepository.Insert()
 	// c.OfferRepository.Insert()
 	fmt.Printf("%#v\n", h)
 	ctx.JSON(200, model.Success{Success: true})
