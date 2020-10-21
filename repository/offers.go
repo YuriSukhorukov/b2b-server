@@ -7,15 +7,19 @@ import (
 )
 
 type OfferRepository struct {
-	DB *sqlx.DB
+	db *sqlx.DB
+}
+
+func NewOfferRepository(db *sqlx.DB) *OfferRepository {
+	return &OfferRepository{db}
 }
 
 func (r OfferRepository) Insert() {
     fmt.Println("OfferRepository: Store()")
 
-    fmt.Println(r.DB)
+    fmt.Println(r.db)
 
-    err := r.DB.Ping()
+    err := r.db.Ping()
 	if err != nil {
 		log.Fatalln(err)
 	}

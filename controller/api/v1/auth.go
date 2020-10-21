@@ -21,14 +21,19 @@ import (
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /auth/email_free/{email} [get]
 func (c *Controller) EmailFree(ctx *gin.Context) {
-	email := ctx.Param("email")
-	fmt.Printf("email: %s\n", email)
-	ctx.JSON(200, model.Success{Success: true})
-	// if err != nil {
-	// 	ctx.JSON(200, model.Error{Success: false, Error: err.Error()})
-	// 	return
-	// }
-	c.AccountRepository.Insert()
+	email 				:= ctx.Param("email")
+	err, result 		:= c.AccountRepository.IsEmailFree(email)
+	
+	if err != nil {
+		fmt.Printf(err.Error())
+		ctx.JSON(500, model.Error{Success: false, Error: "something went wrong"})
+		return
+	} else if result != true {
+		ctx.JSON(400, model.Error{Success: false, Error: "email is not available"})
+		return
+	}
+	
+	ctx.JSON(200, model.Success{Success: result})
 }
 
 // SignUp godoc
@@ -74,7 +79,8 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 		ctx.JSON(200, model.Error{Success: false, Error: err.Error()})
 	}
 
-	c.OfferRepository.Insert()
+	c.AccountRepository.Insert()
+	// c.OfferRepository.Insert()
 	fmt.Printf("%#v\n", h)
 	ctx.JSON(200, model.Success{Success: true})
 }
