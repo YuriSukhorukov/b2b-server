@@ -8,6 +8,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
+	"github.com/b2b-server/service"
 	"github.com/b2b-server/repository"
 )
 
@@ -54,9 +55,14 @@ import (
 // @scope.admin Grants read and write access to administrative information
 
 func main() {
-	g 	:= gin.Default()
-	r 	:= repository.NewRepository()
-	c 	:= controller.NewController(*r)
+	psgql 		:= service.NewPostgresql()
+	
+	accounts 	:= repository.AccountRepository{psgql}
+	offers		:= repository.OfferRepository{psgql}
+
+	r 			:= repository.NewRepository(accounts, offers)
+	c 			:= controller.NewController(*r)
+	g 			:= gin.Default()
 
 	v1 := g.Group("/api/v1") 
 	{

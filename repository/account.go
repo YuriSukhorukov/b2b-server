@@ -7,15 +7,15 @@ import (
 )
 
 type AccountRepository struct {
-	db *sqlx.DB
+	DB *sqlx.DB
 }
 
 func (r AccountRepository) Insert() {
     fmt.Println("AccountRepository: Store()")
 
-    fmt.Println(r.db)
+    fmt.Println(r.DB)
 
-    err := r.db.Ping()
+    err := r.DB.Ping()
 	if err != nil {
 		log.Fatalln(err)
 	}
