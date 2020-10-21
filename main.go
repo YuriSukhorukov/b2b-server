@@ -55,14 +55,13 @@ import (
 // @scope.admin Grants read and write access to administrative information
 
 func main() {
+	g 			:= gin.Default()
 	psgql 		:= service.NewPostgresql()
 	
 	accounts 	:= repository.AccountRepository{psgql}
 	offers		:= repository.OfferRepository{psgql}
 
-	r 			:= repository.NewRepository(accounts, offers)
-	c 			:= controller.NewController(*r)
-	g 			:= gin.Default()
+	c 			:= controller.NewController(accounts, offers)
 
 	v1 := g.Group("/api/v1") 
 	{

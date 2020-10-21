@@ -28,8 +28,7 @@ func (c *Controller) EmailFree(ctx *gin.Context) {
 	// 	ctx.JSON(200, model.Error{Success: false, Error: err.Error()})
 	// 	return
 	// }
-	c.Repository.Accounts.Insert()
-	c.Repository.Offers.Insert()
+	c.AccountRepository.Insert()
 }
 
 // SignUp godoc
@@ -75,6 +74,7 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 		ctx.JSON(200, model.Error{Success: false, Error: err.Error()})
 	}
 
+	c.OfferRepository.Insert()
 	fmt.Printf("%#v\n", h)
 	ctx.JSON(200, model.Success{Success: true})
 }

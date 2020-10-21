@@ -4,12 +4,13 @@ import "github.com/b2b-server/repository"
 
 // Controller example
 type Controller struct {
-	Repository repository.Repository
+	AccountRepository 		repository.AccountRepository
+	OfferRepository 		repository.OfferRepository
 }
 
 // NewController example
-func NewController(r repository.Repository) *Controller {
-	return &Controller{r}
+func NewController(ar repository.AccountRepository, or repository.OfferRepository) *Controller {
+	return &Controller{ar, or}
 }
 
 // Message example
