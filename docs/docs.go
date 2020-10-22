@@ -140,7 +140,7 @@ var doc = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Удаляет HttpOnly Cookie JWT пользователя",
+                "summary": "Проверяет HttpOnly Cookie JWT пользователя",
                 "responses": {
                     "200": {
                         "description": "Успешное выполнение операции",
