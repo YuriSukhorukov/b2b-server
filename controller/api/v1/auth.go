@@ -86,7 +86,7 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 }
 
 // SignOut godoc
-// @Summary Удаляет HttpOnly Cookie JWT пользователя
+// @Summary Проверяет HttpOnly Cookie JWT пользователя
 // @Description Возвращает результат операции удаления HttpOnly Cookie JWT пользователя
 // @Tags auth
 // @Accept json
