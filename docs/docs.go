@@ -190,7 +190,10 @@ var doc = `{
                     "201": {
                         "description": "Успешное выполнение операции",
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Record"
+                            }
                         }
                     },
                     "400": {
@@ -258,20 +261,25 @@ var doc = `{
                 }
             }
         },
+        "model.Record": {
+            "type": "object",
+            "properties": {
+                "created_on": {
+                    "type": "string",
+                    "example": "2020-10-23 18:02:35.745565"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
+                }
+            }
+        },
         "model.Success": {
             "type": "object",
             "properties": {
                 "success": {
                     "type": "boolean",
                     "example": true
-                }
-            }
-        },
-        "model.User": {
-            "type": "object",
-            "properties": {
-                "userID": {
-                    "type": "string"
                 }
             }
         }
