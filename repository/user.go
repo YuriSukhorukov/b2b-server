@@ -2,7 +2,7 @@ package repository
 
 import (
 	"fmt"
-	"log"
+	"errors"
 	"database/sql"
 	"github.com/jmoiron/sqlx"
 	"github.com/b2b-server/model"
@@ -19,7 +19,7 @@ func NewUserRepository(db *sqlx.DB) *UserRepository {
 func (r UserRepository) IsEmailFree(email string) (error, bool) {
 	a := model.User{}
 	s := `
-		SELECT email FROM users
+		SELECT user_id FROM users
         WHERE email=$1
         ORDER BY user_id ASC;
 	`
@@ -34,34 +34,28 @@ func (r UserRepository) IsEmailFree(email string) (error, bool) {
 	return err, false
 }
 
-func (r UserRepository) Insert() {
-    fmt.Println("UserRepository: Store()")
+func (r UserRepository) InsertUser(email string, password string) (error, model.User) {
+    m := model.User{}
+    s := `
+        INSERT INTO users(email, password) 
+        VALUES ($1, $2)
+        RETURNING user_id;
+    `
+    rows, err := r.db.Queryx(s, email, password)
 
-    fmt.Println(r.db)
-
-    err := r.db.Ping()
 	if err != nil {
-		log.Fatalln(err)
+		switch err.Error() {
+			case "pq: duplicate key value violates unique constraint \"users_email_key\"":
+			    return errors.New("duplicate email"), model.User{}
+		    default:
+		    	fmt.Println(err.Error())
+			    return errors.New("something wrong"), model.User{}
+		}
 	}
 
-	// result, err := r.db.Exec(`CREATE TABLE place (
-	//     country text,
-	//     city text NULL,
-	//     telcode integer);
-	// `)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// fmt.Println(result)
-
-	a := model.User{}
-	err = r.db.Get(&a, `
-		SELECT email FROM users
-        WHERE email='user_xxx@gmail.com'
-        ORDER BY user_id ASC;
-	`)
-	if err != nil {
-		fmt.Println(err)
+	for rows.Next() {
+   		err = rows.StructScan(&m)
 	}
-	fmt.Println(a)
+
+    return err, m
 }

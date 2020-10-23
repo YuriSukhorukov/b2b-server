@@ -15,7 +15,7 @@ func NewPostgresql() *sqlx.DB {
 		host_port 			= 5432
 		username 			= "postgres"
 		password 			= "12345"
-		database_name 		= "postgres"
+		database_name 		= "b2b"
 		sslmode 			= "disable"
 	)
 

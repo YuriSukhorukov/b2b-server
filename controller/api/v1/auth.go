@@ -3,9 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
-
 	"github.com/gin-gonic/gin"
-
 	"github.com/b2b-server/model"
 )
 
@@ -32,8 +30,8 @@ func (c *Controller) EmailFree(ctx *gin.Context) {
 		ctx.JSON(400, model.Error{Success: false, Error: "email is not available"})
 		return
 	}
-	
-	ctx.JSON(200, model.Success{Success: result})
+
+	ctx.JSON(200, model.Success{Success: true})
 }
 
 // SignUp godoc
@@ -44,20 +42,34 @@ func (c *Controller) EmailFree(ctx *gin.Context) {
 // @Produce json
 // @Param email header string true "Email"
 // @Param password header string true "Password"
-// @Success 201 {object} model.Success "Успешное выполнение операции"
+// @Success 201 {object} model.User "Успешное выполнение операции"
 // @Success 400 {object} model.Error "Email занят для регистрации"
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /auth/signup [post]
 func (c *Controller) SignUp(ctx *gin.Context) {
-	h := model.AuthHeader{}
-
-	if err := ctx.ShouldBindHeader(&h); err != nil {
+	h 		:= model.AuthHeader{}
+	err 	:= ctx.ShouldBindHeader(&h); 
+	if err != nil {
 		ctx.JSON(200, model.Error{Success: false, Error: err.Error()})
 	}
 
-	fmt.Printf("%#v\n", h)
-	ctx.JSON(200, model.Success{Success: true})
-	// ctx.JSON(200, gin.H{"email": h.Email, "password": h.Password})
+	e := h.Email
+	p := h.Password
+	err, result := c.UserRepository.InsertUser(e, p)
+
+	if err != nil {
+		switch err.Error() {
+			case "duplicate email":
+				ctx.JSON(400, model.Error{Success: false, Error: err.Error()})
+				return
+			case "something wrong":
+				ctx.JSON(500, model.Error{Success: false, Error: err.Error()})
+				fmt.Printf(err.Error())
+				return
+		}
+	}
+
+	ctx.JSON(200, result)
 }
 
 // SignIn godoc
@@ -79,7 +91,7 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 		ctx.JSON(200, model.Error{Success: false, Error: err.Error()})
 	}
 
-	c.UserRepository.Insert()
+	// c.UserRepository.Insert()
 	// c.OfferRepository.Insert()
 	fmt.Printf("%#v\n", h)
 	ctx.JSON(200, model.Success{Success: true})

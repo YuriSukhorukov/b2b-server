@@ -140,7 +140,7 @@ var doc = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Проверяет HttpOnly Cookie JWT пользователя",
+                "summary": "Удаляет HttpOnly Cookie JWT пользователя",
                 "responses": {
                     "200": {
                         "description": "Успешное выполнение операции",
@@ -190,7 +190,7 @@ var doc = `{
                     "201": {
                         "description": "Успешное выполнение операции",
                         "schema": {
-                            "$ref": "#/definitions/model.Success"
+                            "$ref": "#/definitions/model.User"
                         }
                     },
                     "400": {
@@ -210,7 +210,7 @@ var doc = `{
         },
         "/auth/verify": {
             "post": {
-                "description": "Возвращает результат операции проверки HttpOnly Cookie JWT пользователя",
+                "description": "Возвращает результат операции валидации HttpOnly Cookie JWT пользователя",
                 "consumes": [
                     "application/json"
                 ],
@@ -220,7 +220,7 @@ var doc = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Удаляет JWT пользователя",
+                "summary": "Валидация JWT пользователя",
                 "responses": {
                     "200": {
                         "description": "Успешное выполнение операции",
@@ -264,6 +264,14 @@ var doc = `{
                 "success": {
                     "type": "boolean",
                     "example": true
+                }
+            }
+        },
+        "model.User": {
+            "type": "object",
+            "properties": {
+                "userID": {
+                    "type": "string"
                 }
             }
         }
