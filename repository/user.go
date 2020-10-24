@@ -17,13 +17,13 @@ func NewUserRepository(db *sqlx.DB) *UserRepository {
 }
 
 func (r UserRepository) IsEmailFree(email string) (error, bool) {
-	a := model.User{}
+	m := model.User{}
 	s := `
 		SELECT user_id FROM users
         WHERE email=$1
         ORDER BY user_id ASC;
 	`
-	err := r.db.Get(&a, s, email)
+	err := r.db.Get(&m, s, email)
 	switch err {
 		case nil:
 		    return nil, false
@@ -61,4 +61,25 @@ func (r UserRepository) InsertUser(email string, password string) (error, []mode
 	}
 
     return err, records
+}
+
+func (r UserRepository) AuthorizeUser(email string, password string) (error, bool) {
+	m := model.User{}
+    s := `
+        SELECT user_id, email, created_on 
+        FROM users
+        WHERE email = $1
+        AND password = $2
+        ORDER BY user_id ASC;
+    `
+    err := r.db.Get(&m, s, email, password)
+
+    switch err {
+		case nil:
+		    return nil, true
+		case sql.ErrNoRows:
+		    return nil, false
+	}
+
+	return err, false
 }

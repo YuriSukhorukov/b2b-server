@@ -91,9 +91,19 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 		ctx.JSON(200, model.Error{Success: false, Error: err.Error()})
 	}
 
-	// c.UserRepository.Insert()
-	// c.OfferRepository.Insert()
-	fmt.Printf("%#v\n", h)
+	e := h.Email
+	p := h.Password
+	err, result := c.UserRepository.AuthorizeUser(e, p)
+
+	if err != nil {
+		fmt.Printf(err.Error())
+		ctx.JSON(500, model.Error{Success: false, Error: "something went wrong"})
+		return
+	} else if result != true {
+		ctx.JSON(400, model.Error{Success: false, Error: "email or password is not correct"})
+		return
+	}
+
 	ctx.JSON(200, model.Success{Success: true})
 }
 
