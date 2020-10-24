@@ -10,6 +10,10 @@ import (
 
 	"github.com/b2b-server/service"
 	"github.com/b2b-server/repository"
+	"os"
+	"github.com/joho/godotenv"
+	"fmt"
+	"strconv"
 )
 
 // @title Swagger Example API
@@ -55,12 +59,37 @@ import (
 // @scope.admin Grants read and write access to administrative information
 
 func main() {
-	g 			:= gin.Default()
-	psgql 		:= service.NewPostgresql()
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Print(err)
+		os.Exit(2)
+	}
+
+	db_host_name 		:= os.Getenv("DB_HOST")
+	db_user_name 		:= os.Getenv("DB_USERNAME")
+	db_password 		:= os.Getenv("DB_PASSWORD")
+	db_database_name 	:= os.Getenv("DB_DATABASE")
+	db_ssl_mode 		:= os.Getenv("DB_SSL_MODE")
+	db_host_port, err 	:= strconv.Atoi(os.Getenv("DB_PORT"))
+
+	if err != nil {
+        fmt.Println(err)
+        os.Exit(2)
+    }
+
+	psgql 				:= service.NewPostgresql(
+		db_host_name,
+		db_host_port,
+		db_user_name,
+		db_password,
+		db_database_name,
+		db_ssl_mode,
+	)
 	
 	users 		:= repository.NewUserRepository(psgql)
 	offers		:= repository.NewOfferRepository(psgql)
 
+	g 			:= gin.Default()
 	c 			:= controller.NewController(*users, *offers)
 
 	v1 := g.Group("/api/v1") 

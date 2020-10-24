@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"github.com/jmoiron/sqlx"
 	"github.com/b2b-server/model"
+	// jwt "github.com/dgrijalva/jwt-go"
 )
 
 type UserRepository struct {

@@ -9,17 +9,8 @@ import (
     "github.com/jmoiron/sqlx"
 )
 
-func NewPostgresql() *sqlx.DB {
-	const (
-		hostname 			= "localhost"
-		host_port 			= 5432
-		username 			= "postgres"
-		password 			= "12345"
-		database_name 		= "b2b"
-		sslmode 			= "disable"
-	)
-
-	pg_con_string 	:= fmt.Sprintf("port=%d host=%s user=%s "+"password=%s dbname=%s sslmode=%s", host_port, hostname, username, password, database_name, sslmode)
+func NewPostgresql(host_name string, host_port int, user_name string, password string, database_name string, ssl_mode string) *sqlx.DB {
+	pg_con_string 	:= fmt.Sprintf("port=%d host=%s user=%s "+"password=%s dbname=%s sslmode=%s", host_port, host_name, user_name, password, database_name, ssl_mode)
 	db, err 		:= sqlx.Connect("postgres", pg_con_string)
 
 	// TODO обработка ошибок без прекращения работы сервера
