@@ -104,6 +104,12 @@ func main() {
 		}
 	}
 
+	// key := os.Getenv("PRIVATE_KEY")
+	// fmt.Println(key)
+	// key = os.Getenv("PUBLIC_KEY")
+	// fmt.Println(key)
+
+
 	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	g.Run(":8080")
 }
