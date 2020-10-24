@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"github.com/b2b-server/model"
+	"github.com/b2b-server/service"
 )
 
 // EmailFree godoc
@@ -99,10 +100,14 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 		fmt.Printf(err.Error())
 		ctx.JSON(500, model.Error{Success: false, Error: "something went wrong"})
 		return
-	} else if result != true {
+	} else if result == nil {
+		ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
 		ctx.JSON(400, model.Error{Success: false, Error: "email or password is not correct"})
 		return
 	}
+
+	jwt := service.Encode(result.UserID)
+	ctx.SetCookie("JWT", jwt, 10, "/", "localhost", true, true)
 
 	ctx.JSON(200, model.Success{Success: true})
 }

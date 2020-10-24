@@ -64,7 +64,7 @@ func (r UserRepository) InsertUser(email string, password string) (error, []mode
     return err, records
 }
 
-func (r UserRepository) AuthorizeUser(email string, password string) (error, bool) {
+func (r UserRepository) AuthorizeUser(email string, password string) (error, *model.User) {
 	m := model.User{}
     s := `
         SELECT user_id, email, created_on 
@@ -77,10 +77,10 @@ func (r UserRepository) AuthorizeUser(email string, password string) (error, boo
 
     switch err {
 		case nil:
-		    return nil, true
+		    return nil, &m
 		case sql.ErrNoRows:
-		    return nil, false
+		    return nil, nil
 	}
 
-	return err, false
+	return err, nil
 }

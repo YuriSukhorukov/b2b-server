@@ -65,6 +65,9 @@ func main() {
 		os.Exit(2)
 	}
 
+	// sign_key 			:= os.Getenv("PRIVATE_KEY")
+	// verify_key 			:= os.Getenv("PUBLIC_KEY")
+
 	db_host_name 		:= os.Getenv("DB_HOST")
 	db_user_name 		:= os.Getenv("DB_USERNAME")
 	db_password 		:= os.Getenv("DB_PASSWORD")
@@ -103,12 +106,6 @@ func main() {
 			auth.POST("verify", c.Verify)
 		}
 	}
-
-	// key := os.Getenv("PRIVATE_KEY")
-	// fmt.Println(key)
-	// key = os.Getenv("PUBLIC_KEY")
-	// fmt.Println(key)
-
 
 	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	g.Run(":8080")
