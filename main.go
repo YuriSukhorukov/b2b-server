@@ -11,7 +11,6 @@ import (
 	"github.com/b2b-server/service"
 	"github.com/b2b-server/repository"
 	"os"
-	"github.com/joho/godotenv"
 	"fmt"
 	"strconv"
 )
@@ -59,12 +58,6 @@ import (
 // @scope.admin Grants read and write access to administrative information
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Print(err)
-		os.Exit(2)
-	}
-
 	signKey 			:= os.Getenv("PRIVATE_KEY")
 	verifyKey 			:= os.Getenv("PUBLIC_KEY")
 
