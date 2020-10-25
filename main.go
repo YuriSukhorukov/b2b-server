@@ -65,8 +65,8 @@ func main() {
 		os.Exit(2)
 	}
 
-	// sign_key 			:= os.Getenv("PRIVATE_KEY")
-	// verify_key 			:= os.Getenv("PUBLIC_KEY")
+	signKey 			:= os.Getenv("PRIVATE_KEY")
+	verifyKey 			:= os.Getenv("PUBLIC_KEY")
 
 	db_host_name 		:= os.Getenv("DB_HOST")
 	db_user_name 		:= os.Getenv("DB_USERNAME")
@@ -79,6 +79,8 @@ func main() {
         fmt.Println(err)
         os.Exit(2)
     }
+	
+	jwt := service.NewJWT(signKey, verifyKey)
 
 	psgql 				:= service.NewPostgresql(
 		db_host_name,
@@ -93,7 +95,7 @@ func main() {
 	offers		:= repository.NewOfferRepository(psgql)
 
 	g 			:= gin.Default()
-	c 			:= controller.NewController(*users, *offers)
+	c 			:= controller.NewController(*jwt, *users, *offers)
 
 	v1 := g.Group("/api/v1") 
 	{

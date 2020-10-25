@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"github.com/b2b-server/model"
-	"github.com/b2b-server/service"
+	// "github.com/b2b-server/service"
 )
 
 // EmailFree godoc
@@ -82,14 +82,16 @@ func (c *Controller) SignUp(ctx *gin.Context) {
 // @Param email header string true "Email"
 // @Param password header string true "Password"
 // @Success 200 {object} model.Success "Успешное выполнение операции"
-// @Success 400 {object} model.Error "Пользователь с таким Email не существует"
+// @Success 400 {object} model.Error "Неверный Email или Password"
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /auth/signin [post]
 func (c *Controller) SignIn(ctx *gin.Context) {
 	h := model.AuthHeader{}
 
 	if err := ctx.ShouldBindHeader(&h); err != nil {
-		ctx.JSON(200, model.Error{Success: false, Error: err.Error()})
+		ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
+		ctx.JSON(500, model.Error{Success: false, Error: err.Error()})
+		return
 	}
 
 	e := h.Email
@@ -98,6 +100,7 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 
 	if err != nil {
 		fmt.Printf(err.Error())
+		ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
 		ctx.JSON(500, model.Error{Success: false, Error: "something went wrong"})
 		return
 	} else if result == nil {
@@ -106,9 +109,16 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 		return
 	}
 
-	jwt := service.Encode(result.UserID)
-	ctx.SetCookie("JWT", jwt, 10, "/", "localhost", true, true)
+	err, jwt := c.JWT.Encode(result.UserID)
 
+	if err != nil {
+		fmt.Printf(err.Error())
+		ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
+		ctx.JSON(500, model.Error{Success: false, Error: "something went wrong"})
+		return
+	}
+
+	ctx.SetCookie("JWT", jwt, 10, "/", "localhost", true, true)
 	ctx.JSON(200, model.Success{Success: true})
 }
 
