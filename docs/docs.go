@@ -76,6 +76,175 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/auth/signin": {
+            "post": {
+                "description": "Возвращает результат операции создания HttpOnly Cookie JWT пользователя при авторизации",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Добавляет HttpOnly Cookie JWT пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Email",
+                        "name": "email",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Password",
+                        "name": "password",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное выполнение операции",
+                        "schema": {
+                            "$ref": "#/definitions/model.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный Email или Password",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/signout": {
+            "delete": {
+                "description": "Возвращает результат операции удаления HttpOnly Cookie JWT пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Удаляет HttpOnly Cookie JWT пользователя",
+                "responses": {
+                    "200": {
+                        "description": "Успешное выполнение операции",
+                        "schema": {
+                            "$ref": "#/definitions/model.Success"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/signup": {
+            "post": {
+                "description": "Возвращает результат операции добавленя нового пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Добавляет нового пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Email",
+                        "name": "email",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Password",
+                        "name": "password",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Успешное выполнение операции",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Record"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Email занят для регистрации",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/verify": {
+            "post": {
+                "description": "Возвращает результат операции валидации HttpOnly Cookie JWT пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Валидация JWT пользователя",
+                "responses": {
+                    "200": {
+                        "description": "Успешное выполнение операции",
+                        "schema": {
+                            "$ref": "#/definitions/model.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Неудачная валидация HttpOnly Cookie JWT",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен JWT отсутствует",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -89,6 +258,19 @@ var doc = `{
                 "success": {
                     "type": "boolean",
                     "example": false
+                }
+            }
+        },
+        "model.Record": {
+            "type": "object",
+            "properties": {
+                "created_on": {
+                    "type": "string",
+                    "example": "2020-10-23 18:02:35.745565"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
                 }
             }
         },
