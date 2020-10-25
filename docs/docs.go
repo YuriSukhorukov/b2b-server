@@ -114,7 +114,7 @@ var doc = `{
                         }
                     },
                     "400": {
-                        "description": "Пользователь с таким Email не существует",
+                        "description": "Неверный Email или Password",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }
