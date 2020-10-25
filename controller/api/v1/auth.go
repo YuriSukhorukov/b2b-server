@@ -132,7 +132,8 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /auth/signout [delete]
 func (c *Controller) SignOut(ctx *gin.Context) {
-	ctx.String(http.StatusOK, "Ok")
+	ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
+	ctx.JSON(200, model.Success{Success: true})
 }
 
 // Verify godoc

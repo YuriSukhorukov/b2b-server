@@ -2,7 +2,6 @@ package service
 
 import (
 	"time"
-	// "fmt"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -35,14 +34,7 @@ func (j *JWT) Decode(t string) (error, string) {
 	_, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 	    return []byte(j.SignKey), nil
 	})
-	// ... error handling
 
-	// do something with decoded claims
-	// for key, val := range claims {
-	//     fmt.Printf("Key: %v, value: %v\n", key, val)
-	// }
-	// fmt.Println(claims["payload"])
 	payload := claims["payload"].(string)
-
 	return err, payload
 }
