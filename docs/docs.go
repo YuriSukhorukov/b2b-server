@@ -237,8 +237,8 @@ var doc = `{
                             "$ref": "#/definitions/model.Error"
                         }
                     },
-                    "500": {
-                        "description": "Ошибка сервера",
+                    "401": {
+                        "description": "Токен JWT отсутствует",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }

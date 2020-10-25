@@ -2,10 +2,8 @@ package controller
 
 import (
 	"fmt"
-	"net/http"
 	"github.com/gin-gonic/gin"
 	"github.com/b2b-server/model"
-	// "github.com/b2b-server/service"
 )
 
 // EmailFree godoc
@@ -109,7 +107,7 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 		return
 	}
 
-	err, jwt := c.JWT.Encode(result.UserID)
+	err, token := c.JWT.Encode(result.UserID)
 
 	if err != nil {
 		fmt.Printf(err.Error())
@@ -118,7 +116,49 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetCookie("JWT", jwt, 10, "/", "localhost", true, true)
+	second := 1
+	minute := second * 60
+	hour := minute * 60
+	day := hour * 24
+	week := day * 8
+
+	maxAge 		:= week
+	path 		:= "/"
+	domain 		:= "localhost"
+	secure 		:= false
+	httpOnly 	:= true
+
+	ctx.SetCookie("JWT", token, maxAge, path, domain, secure, httpOnly)
+	ctx.JSON(200, model.Success{Success: true})
+}
+
+// Verify godoc
+// @Summary Валидация JWT пользователя
+// @Description Возвращает результат операции валидации HttpOnly Cookie JWT пользователя
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} model.Success "Успешное выполнение операции"
+// @Success 400 {object} model.Error "Неудачная валидация HttpOnly Cookie JWT"
+// @Success 401 {object} model.Error "Токен JWT отсутствует"
+// @Router /auth/verify [post]
+func (c *Controller) Verify(ctx *gin.Context) {
+	cookie, err := ctx.Cookie("JWT")
+
+	if err != nil {
+		fmt.Println(err)
+		ctx.JSON(401, model.Error{Success: false, Error: "no token"})
+		return
+	}
+
+	err, _ = c.JWT.Decode(cookie)
+
+	if err != nil {
+		fmt.Println(err)
+		ctx.JSON(400, model.Error{Success: false, Error: "validation failure"})
+		return
+	}
+
 	ctx.JSON(200, model.Success{Success: true})
 }
 
@@ -134,18 +174,4 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 func (c *Controller) SignOut(ctx *gin.Context) {
 	ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
 	ctx.JSON(200, model.Success{Success: true})
-}
-
-// Verify godoc
-// @Summary Валидация JWT пользователя
-// @Description Возвращает результат операции валидации HttpOnly Cookie JWT пользователя
-// @Tags auth
-// @Accept json
-// @Produce json
-// @Success 200 {object} model.Success "Успешное выполнение операции"
-// @Success 400 {object} model.Error "Неудачная валидация HttpOnly Cookie JWT"
-// @Failure 500 {object} model.Error "Ошибка сервера"
-// @Router /auth/verify [post]
-func (c *Controller) Verify(ctx *gin.Context) {
-	ctx.String(http.StatusOK, "Ok")
 }

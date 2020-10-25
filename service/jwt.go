@@ -28,12 +28,16 @@ func (j *JWT) Encode(payload string) (error, string) {
     return err, tokenString
 }
 
-func (j *JWT) Decode(t string) (error, string) {
-	tokenString := t  
+func (j *JWT) Decode(token string) (error, string) {
+	tokenString := token
 	claims := jwt.MapClaims{}
 	_, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 	    return []byte(j.SignKey), nil
 	})
+
+	if err != nil {
+		return err, ""
+	}
 
 	payload := claims["payload"].(string)
 	return err, payload
