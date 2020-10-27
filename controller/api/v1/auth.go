@@ -16,7 +16,7 @@ import (
 // @Success 200 {object} model.Success "Email свободен для регистрации"
 // @Success 400 {object} model.Error "Email занят для регистрации"
 // @Failure 500 {object} model.Error "Ошибка сервера"
-// @Router /auth/email_free/{email} [get]
+// @Router /email_free/{email} [get]
 func (c *Controller) EmailFree(ctx *gin.Context) {
 	email 				:= ctx.Param("email")
 	err, result 		:= c.UserRepository.IsEmailFree(email)
@@ -44,7 +44,7 @@ func (c *Controller) EmailFree(ctx *gin.Context) {
 // @Success 201 {array} model.Record "Успешное выполнение операции"
 // @Success 400 {object} model.Error "Email занят для регистрации"
 // @Failure 500 {object} model.Error "Ошибка сервера"
-// @Router /auth/signup [post]
+// @Router /signup [post]
 func (c *Controller) SignUp(ctx *gin.Context) {
 	h 		:= model.AuthHeader{}
 	err 	:= ctx.ShouldBindHeader(&h); 
@@ -82,7 +82,7 @@ func (c *Controller) SignUp(ctx *gin.Context) {
 // @Success 200 {object} model.Success "Успешное выполнение операции"
 // @Success 400 {object} model.Error "Неверный Email или Password"
 // @Failure 500 {object} model.Error "Ошибка сервера"
-// @Router /auth/signin [post]
+// @Router /signin [post]
 func (c *Controller) SignIn(ctx *gin.Context) {
 	h := model.AuthHeader{}
 
@@ -132,17 +132,17 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 	ctx.JSON(200, model.Success{Success: true})
 }
 
-// Verify godoc
-// @Summary Валидация JWT пользователя
-// @Description Возвращает результат операции валидации HttpOnly Cookie JWT пользователя
+// Auth godoc
+// @Summary Авторизация пользователя проверкой HttpOnly Cookie JWT
+// @Description Возвращает результат операции авторизации HttpOnly Cookie JWT пользователя
 // @Tags auth
 // @Accept json
 // @Produce json
 // @Success 200 {object} model.Success "Успешное выполнение операции"
-// @Success 400 {object} model.Error "Неудачная валидация HttpOnly Cookie JWT"
+// @Success 400 {object} model.Error "Неудачная авторизация HttpOnly Cookie JWT"
 // @Success 401 {object} model.Error "Токен JWT отсутствует"
-// @Router /auth/verify [post]
-func (c *Controller) Verify(ctx *gin.Context) {
+// @Router /auth [post]
+func (c *Controller) Auth(ctx *gin.Context) {
 	cookie, err := ctx.Cookie("JWT")
 
 	if err != nil {
@@ -170,7 +170,7 @@ func (c *Controller) Verify(ctx *gin.Context) {
 // @Produce json
 // @Success 200 {object} model.Success "Успешное выполнение операции"
 // @Failure 500 {object} model.Error "Ошибка сервера"
-// @Router /auth/signout [delete]
+// @Router /signout [delete]
 func (c *Controller) SignOut(ctx *gin.Context) {
 	ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
 	ctx.JSON(200, model.Success{Success: true})

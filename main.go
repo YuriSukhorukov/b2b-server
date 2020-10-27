@@ -92,12 +92,12 @@ func main() {
 
 	v1 := g.Group("/api/v1") 
 	{
-		auth := v1.Group("/auth")
+		auth := v1.Group("")
 		{
 			auth.GET("email_free/:email", c.EmailFree)
 			auth.POST("signup", c.SignUp)
 			auth.POST("signin", c.SignIn)
-			auth.POST("verify", c.Verify)
+			auth.POST("auth", c.Auth)
 			auth.DELETE("signout", c.SignOut)
 		}
 		offers := v1.Group("/offers")

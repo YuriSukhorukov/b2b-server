@@ -33,7 +33,42 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/email_free/{email}": {
+        "/auth": {
+            "post": {
+                "description": "Возвращает результат операции авторизации HttpOnly Cookie JWT пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Авторизация пользователя проверкой HttpOnly Cookie JWT",
+                "responses": {
+                    "200": {
+                        "description": "Успешное выполнение операции",
+                        "schema": {
+                            "$ref": "#/definitions/model.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Неудачная авторизация HttpOnly Cookie JWT",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен JWT отсутствует",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/email_free/{email}": {
             "get": {
                 "description": "Возвращает результат проверки доступности e-mail для регистрации",
                 "consumes": [
@@ -77,7 +112,36 @@ var doc = `{
                 }
             }
         },
-        "/auth/signin": {
+        "/offers": {
+            "get": {
+                "tags": [
+                    "offers"
+                ]
+            },
+            "post": {
+                "tags": [
+                    "offers"
+                ]
+            }
+        },
+        "/offers/{id}": {
+            "get": {
+                "tags": [
+                    "offers"
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "offers"
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "offers"
+                ]
+            }
+        },
+        "/signin": {
             "post": {
                 "description": "Возвращает результат операции создания HttpOnly Cookie JWT пользователя при авторизации",
                 "consumes": [
@@ -128,7 +192,7 @@ var doc = `{
                 }
             }
         },
-        "/auth/signout": {
+        "/signout": {
             "delete": {
                 "description": "Возвращает результат операции удаления HttpOnly Cookie JWT пользователя",
                 "consumes": [
@@ -157,7 +221,7 @@ var doc = `{
                 }
             }
         },
-        "/auth/signup": {
+        "/signup": {
             "post": {
                 "description": "Возвращает результат операции добавленя нового пользователя",
                 "consumes": [
@@ -209,70 +273,6 @@ var doc = `{
                         }
                     }
                 }
-            }
-        },
-        "/auth/verify": {
-            "post": {
-                "description": "Возвращает результат операции валидации HttpOnly Cookie JWT пользователя",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Валидация JWT пользователя",
-                "responses": {
-                    "200": {
-                        "description": "Успешное выполнение операции",
-                        "schema": {
-                            "$ref": "#/definitions/model.Success"
-                        }
-                    },
-                    "400": {
-                        "description": "Неудачная валидация HttpOnly Cookie JWT",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    },
-                    "401": {
-                        "description": "Токен JWT отсутствует",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/offers": {
-            "get": {
-                "tags": [
-                    "offers"
-                ]
-            },
-            "post": {
-                "tags": [
-                    "offers"
-                ]
-            }
-        },
-        "/offers/{id}": {
-            "get": {
-                "tags": [
-                    "offers"
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "offers"
-                ]
-            },
-            "patch": {
-                "tags": [
-                    "offers"
-                ]
             }
         }
     },
