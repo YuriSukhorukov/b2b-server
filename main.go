@@ -100,6 +100,14 @@ func main() {
 			auth.POST("verify", c.Verify)
 			auth.DELETE("signout", c.SignOut)
 		}
+		offers := v1.Group("/offers")
+		{
+			offers.GET(":id", c.ShowOffer)
+			offers.GET("", c.ListOffers)
+			offers.POST("", c.AddOffer)
+			offers.PATCH(":id", c.UpdateOffer)
+			offers.DELETE(":id", c.DeleteOffer)
+		}
 	}
 
 	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

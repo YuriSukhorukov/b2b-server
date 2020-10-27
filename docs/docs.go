@@ -245,6 +245,35 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/offers": {
+            "get": {
+                "tags": [
+                    "offers"
+                ]
+            },
+            "post": {
+                "tags": [
+                    "offers"
+                ]
+            }
+        },
+        "/offers/{id}": {
+            "get": {
+                "tags": [
+                    "offers"
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "offers"
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "offers"
+                ]
+            }
         }
     },
     "definitions": {
