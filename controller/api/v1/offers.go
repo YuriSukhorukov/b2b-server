@@ -4,12 +4,27 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/b2b-server/model"
+	"github.com/b2b-server/constant"
 )
 
 // AddOffer godoc
 // @Tags offers
+// @Accept json
+// @Produce json
+// @Param offer body model.Offer true "Offer"
+// @Success 201 {array} model.Record "Успешное выполнение операции"
+// @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /offers [post]
 func (c *Controller) AddOffer(ctx *gin.Context) {
+	var offer model.Offer
+	if err := ctx.ShouldBindJSON(&offer); err != nil {
+		ctx.JSON(400, model.Error{Success: false, Error: err.Error()})
+		return
+	}
+	fmt.Println(offer)
+	fmt.Println(constant.MEASURE_UNIT_CODE_TON)
+
+
 	fmt.Println("CreateOffer")
 	ctx.JSON(200, model.Success{Success: true})
 }

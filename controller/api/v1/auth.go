@@ -14,7 +14,7 @@ import (
 // @Produce json
 // @Param email path string true "Email"
 // @Success 200 {object} model.Success "Email свободен для регистрации"
-// @Success 400 {object} model.Error "Email занят для регистрации"
+// @Failure 400 {object} model.Error "Email занят для регистрации"
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /email_free/{email} [get]
 func (c *Controller) EmailFree(ctx *gin.Context) {
@@ -42,7 +42,7 @@ func (c *Controller) EmailFree(ctx *gin.Context) {
 // @Param email header string true "Email"
 // @Param password header string true "Password"
 // @Success 201 {array} model.Record "Успешное выполнение операции"
-// @Success 400 {object} model.Error "Email занят для регистрации"
+// @Failure 400 {object} model.Error "Email занят для регистрации"
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /signup [post]
 func (c *Controller) SignUp(ctx *gin.Context) {
@@ -80,7 +80,7 @@ func (c *Controller) SignUp(ctx *gin.Context) {
 // @Param email header string true "Email"
 // @Param password header string true "Password"
 // @Success 200 {object} model.Success "Успешное выполнение операции"
-// @Success 400 {object} model.Error "Неверный Email или Password"
+// @Failure 400 {object} model.Error "Неверный Email или Password"
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /signin [post]
 func (c *Controller) SignIn(ctx *gin.Context) {
@@ -139,8 +139,8 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200 {object} model.Success "Успешное выполнение операции"
-// @Success 400 {object} model.Error "Неудачная авторизация HttpOnly Cookie JWT"
-// @Success 401 {object} model.Error "Токен JWT отсутствует"
+// @Failure 400 {object} model.Error "Неудачная авторизация HttpOnly Cookie JWT"
+// @Failure 401 {object} model.Error "Токен JWT отсутствует"
 // @Router /auth [post]
 func (c *Controller) Auth(ctx *gin.Context) {
 	cookie, err := ctx.Cookie("JWT")

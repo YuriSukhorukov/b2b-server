@@ -119,9 +119,43 @@ var doc = `{
                 ]
             },
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "offers"
-                ]
+                ],
+                "parameters": [
+                    {
+                        "description": "Offer",
+                        "name": "offer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Offer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Успешное выполнение операции",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Record"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
             }
         },
         "/offers/{id}": {
@@ -287,6 +321,71 @@ var doc = `{
                 "success": {
                     "type": "boolean",
                     "example": false
+                }
+            }
+        },
+        "model.Offer": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "string",
+                    "format": "int",
+                    "example": "100"
+                },
+                "city": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "Москва"
+                },
+                "country": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "Российская Федерация"
+                },
+                "created_on": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "2020-10-28T14:58:56.059Z"
+                },
+                "currency_code": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "RUB"
+                },
+                "date_expires": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "2020-10-28T14:58:56.059Z"
+                },
+                "description": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "Оригинальная сгущенка Рогачев"
+                },
+                "measure_unit_code": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "KG"
+                },
+                "offer_id": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
+                },
+                "offer_type": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "BUY"
+                },
+                "price": {
+                    "type": "string",
+                    "format": "int",
+                    "example": "1000000"
+                },
+                "title": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "Сгущенка"
                 }
             }
         },
