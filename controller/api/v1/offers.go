@@ -25,6 +25,8 @@ func (c *Controller) AddOffer(ctx *gin.Context) {
 		return
 	}
 
+	c.OfferRepository.InsertOffer(addOffer)
+
 	fmt.Println("CreateOffer")
 	ctx.JSON(200, model.Success{Success: true})
 }
