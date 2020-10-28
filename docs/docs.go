@@ -386,6 +386,11 @@ var doc = `{
                     "type": "string",
                     "format": "string",
                     "example": "Сгущенка"
+                },
+                "user_id": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
                 }
             }
         },

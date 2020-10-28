@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"github.com/jmoiron/sqlx"
+	"github.com/b2b-server/model"
 )
 
 type OfferRepository struct {
@@ -14,7 +15,7 @@ func NewOfferRepository(db *sqlx.DB) *OfferRepository {
 	return &OfferRepository{db}
 }
 
-func (r OfferRepository) Insert() {
+func (r OfferRepository) InsertOffer() {
     fmt.Println("OfferRepository: Store()")
 
     fmt.Println(r.db)
@@ -23,6 +24,11 @@ func (r OfferRepository) Insert() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+
+
+	m := model.Offer{}
+	_ = m
 }
 
 func (r OfferRepository) Fetch() {
