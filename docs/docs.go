@@ -288,10 +288,7 @@ var doc = `{
                     "201": {
                         "description": "Успешное выполнение операции",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.Record"
-                            }
+                            "$ref": "#/definitions/model.Record"
                         }
                     },
                     "400": {

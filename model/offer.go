@@ -3,16 +3,16 @@ package model
 import "errors"
 
 type AddOffer struct {
-	Title   			string    	`json:"title" example:"Сгущенка" format:"string"`
-	Description 		string 		`json:"description" example:"Оригинальная сгущенка Рогачев" format:"string"`
-	Price				string 		`json:"price" example:"1000000" format:"int"`
-	Amount 				string 		`json:"amount" example:"100" format:"int"`
-	CurrencyCode 		string 		`json:"currency_code" example:"RUB" format:"string"`
-	OfferType 			string 		`json:"offer_type" example:"BUY" format:"string"`
-	MeasureUnitCode 	string 		`json:"measure_unit_code" example:"KG" format:"string"`
-	DateExpires 		string 		`json:"date_expires" example:"2020-10-28T14:58:56.059Z" format:"string"`
-	Country 			string 		`json:"country" example:"Российская Федерация" format:"string"`
-	City 				string 		`json:"city" example:"Москва" format:"string"`
+	Title   			string    	`db:"title" json:"title" example:"Сгущенка" format:"string"`
+	Description 		string 		`db:"description" json:"description" example:"Оригинальная сгущенка Рогачев" format:"string"`
+	Price				string 		`db:"price" json:"price" example:"1000000" format:"int"`
+	Amount 				string 		`db:"amount" json:"amount" example:"100" format:"int"`
+	CurrencyCode 		string 		`db:"currency_code" json:"currency_code" example:"RUB" format:"string"`
+	OfferType 			string 		`db:"offer_type" json:"offer_type" example:"BUY" format:"string"`
+	MeasureUnitCode 	string 		`db:"measure_unit_code" json:"measure_unit_code" example:"KG" format:"string"`
+	DateExpires 		string 		`db:"date_expires" json:"date_expires" example:"2020-10-28T14:58:56.059Z" format:"string"`
+	Country 			string 		`db:"country" json:"country" example:"Российская Федерация" format:"string"`
+	City 				string 		`db:"city" json:"city" example:"Москва" format:"string"`
 }
 
 var (
@@ -56,17 +56,17 @@ func (a AddOffer) Validation() error {
 }
 
 type Offer struct {
-	OfferID   			string    	`json:"offer_id" example:"1d586b05-7b80-4a3a-bf2c-ce48169d4e85" format:"string"`
-	UserID   			string    	`json:"user_id" example:"1d586b05-7b80-4a3a-bf2c-ce48169d4e85" format:"string"`
-	Title   			string    	`json:"title" example:"Сгущенка" format:"string"`
-	Description 		string 		`json:"description" example:"Оригинальная сгущенка Рогачев" format:"string"`
-	Price				string 		`json:"price" example:"1000000" format:"int"`
-	Amount 				string 		`json:"amount" example:"100" format:"int"`
-	CurrencyCode 		string 		`json:"currency_code" example:"RUB" format:"string"`
-	OfferType 			string 		`json:"offer_type" example:"BUY" format:"string"`
-	MeasureUnitCode 	string 		`json:"measure_unit_code" example:"KG" format:"string"`
-	DateExpires 		string 		`json:"date_expires" example:"2020-10-28T14:58:56.059Z" format:"string"`
-	Country 			string 		`json:"country" example:"Российская Федерация" format:"string"`
-	City 				string 		`json:"city" example:"Москва" format:"string"`
-	CreatedOn			string 		`json:"created_on" example:"2020-10-28T14:58:56.059Z" format:"string"`
+	OfferID   			string    	`db:"offer_id" json:"offer_id" example:"1d586b05-7b80-4a3a-bf2c-ce48169d4e85" format:"string"`
+	UserID   			string    	`db:"user_id" json:"user_id" example:"1d586b05-7b80-4a3a-bf2c-ce48169d4e85" format:"string"`
+	Title   			string    	`db:"title" json:"title" example:"Сгущенка" format:"string"`
+	Description 		string 		`db:"description" json:"description" example:"Оригинальная сгущенка Рогачев" format:"string"`
+	Price				string 		`db:"price" json:"price" example:"1000000" format:"int"`
+	Amount 				string 		`db:"amount" json:"amount" example:"100" format:"int"`
+	CurrencyCode 		string 		`db:"currency_code" json:"currency_code" example:"RUB" format:"string"`
+	OfferType 			string 		`db:"offer_type" json:"offer_type" example:"BUY" format:"string"`
+	MeasureUnitCode 	string 		`db:"measure_unit_code" json:"measure_unit_code" example:"KG" format:"string"`
+	DateExpires 		string 		`db:"date_expires" json:"date_expires" example:"2020-10-28T14:58:56.059Z" format:"string"`
+	Country 			string 		`db:"country" json:"country" example:"Российская Федерация" format:"string"`
+	City 				string 		`db:"city" json:"city" example:"Москва" format:"string"`
+	CreatedOn			string 		`db:"created_on" json:"created_on" example:"2020-10-28T14:58:56.059Z" format:"string"`
 }

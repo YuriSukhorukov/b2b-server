@@ -25,10 +25,36 @@ func (c *Controller) AddOffer(ctx *gin.Context) {
 		return
 	}
 
-	c.OfferRepository.InsertOffer(addOffer)
+	cookie, err := ctx.Cookie("JWT")
+	if err != nil {
+		fmt.Println(err)
+		ctx.JSON(401, model.Error{Success: false, Error: "no token"})
+		return
+	}
 
-	fmt.Println("CreateOffer")
-	ctx.JSON(200, model.Success{Success: true})
+	err, userID := c.JWT.Decode(cookie)
+	if err != nil {
+		fmt.Println(err)
+		ctx.JSON(400, model.Error{Success: false, Error: "validation failure"})
+		return
+	}
+
+	offer := model.Offer{
+		UserID: userID,
+		Title: addOffer.Title,
+		Description: addOffer.Description,
+		Price: addOffer.Price,
+		Amount: addOffer.Amount,
+		CurrencyCode: addOffer.CurrencyCode,
+		OfferType: addOffer.OfferType,
+		MeasureUnitCode: addOffer.MeasureUnitCode,
+		DateExpires: addOffer.DateExpires,
+		Country: addOffer.Country,
+		City: addOffer.City,
+	}
+
+	err, result := c.OfferRepository.InsertOffer(offer)
+	ctx.JSON(200, result)
 }
 
 // UpdateOffer godoc

@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/b2b-server/model"
 )
@@ -14,7 +13,20 @@ func NewOfferRepository(db *sqlx.DB) *OfferRepository {
 	return &OfferRepository{db}
 }
 
-func (r OfferRepository) InsertOffer(addOffer model.AddOffer) {
-	fmt.Println("InsertOffer")
-	fmt.Println(addOffer)
+func (r OfferRepository) InsertOffer(offer model.Offer) (error, *model.Record) {
+	o := model.Offer{}
+	s := `
+        INSERT INTO offers(user_id, title, description, price, amount, currency_code, offer_type, measure_unit_code, date_expires, country, city) 
+        VALUES (:user_id, :title, :description, :price, :amount, :currency_code, :offer_type, :measure_unit_code, :date_expires, :country, :city)
+        RETURNING offer_id, created_on;
+    `
+    rows, err := r.db.NamedQuery(s, offer)
+
+	for rows.Next() {
+   		err 		= rows.StructScan(&o)
+	}
+
+	record := model.Record{o.OfferID, o.CreatedOn}
+
+	return err, &record
 }

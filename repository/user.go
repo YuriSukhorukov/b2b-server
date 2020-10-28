@@ -35,7 +35,7 @@ func (r UserRepository) IsEmailFree(email string) (error, bool) {
 	return err, false
 }
 
-func (r UserRepository) InsertUser(email string, password string) (error, []model.Record) {
+func (r UserRepository) InsertUser(email string, password string) (error, *model.Record) {
     m := model.User{}
     s := `
         INSERT INTO users(email, password) 
@@ -47,8 +47,8 @@ func (r UserRepository) InsertUser(email string, password string) (error, []mode
 	if err != nil {
 		switch err.Error() {
 			case "pq: duplicate key value violates unique constraint \"users_email_key\"":
-			    return errors.New("duplicate email"), nil
-		    default:
+			    return errors.New("duplicate email"), nil		    
+			default:
 		    	fmt.Println(err.Error())
 			    return errors.New("something wrong"), nil
 		}
@@ -61,7 +61,7 @@ func (r UserRepository) InsertUser(email string, password string) (error, []mode
    		records 	= append(records, model.Record{m.UserID, m.CreatedOn})
 	}
 
-    return err, records
+    return err, &records[0]
 }
 
 func (r UserRepository) AuthorizeUser(email string, password string) (error, *model.User) {

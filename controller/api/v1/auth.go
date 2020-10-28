@@ -41,7 +41,7 @@ func (c *Controller) EmailFree(ctx *gin.Context) {
 // @Produce json
 // @Param email header string true "Email"
 // @Param password header string true "Password"
-// @Success 201 {array} model.Record "Успешное выполнение операции"
+// @Success 201 {object} model.Record "Успешное выполнение операции"
 // @Failure 400 {object} model.Error "Email занят для регистрации"
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /signup [post]
