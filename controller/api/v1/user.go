@@ -23,10 +23,10 @@ func (c *Controller) EmailFree(ctx *gin.Context) {
 	
 	if err != nil {
 		fmt.Printf(err.Error())
-		ctx.JSON(500, model.Error{Success: false, Error: "something went wrong"})
+		ctx.JSON(500, model.Error{Success: false, Error: ErrSomethingWrong.Error()})
 		return
 	} else if result != true {
-		ctx.JSON(400, model.Error{Success: false, Error: "email is not available"})
+		ctx.JSON(400, model.Error{Success: false, Error: ErrEmailNowAvailable.Error()})
 		return
 	}
 
@@ -107,18 +107,18 @@ func (c *Controller) Authenticate(ctx *gin.Context) {
 	err, result := c.UserRepository.AuthorizeUser(user)
 
 	if err := result.Validation(); err != nil {
-		ctx.JSON(400, model.Error{Success: false, Error: "email or password is not correct"})
+		ctx.JSON(400, model.Error{Success: false, Error: ErrEmailOrPasswordNotCorrect.Error()})
 		return
 	}
 
 	if err != nil {
 		fmt.Printf(err.Error())
 		ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
-		ctx.JSON(500, model.Error{Success: false, Error: "something went wrong"})
+		ctx.JSON(500, model.Error{Success: false, Error: ErrSomethingWrong.Error()})
 		return
 	} else if result == nil {
 		ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
-		ctx.JSON(400, model.Error{Success: false, Error: "email or password is not correct"})
+		ctx.JSON(400, model.Error{Success: false, Error: ErrEmailOrPasswordNotCorrect.Error()})
 		return
 	}
 
@@ -127,7 +127,7 @@ func (c *Controller) Authenticate(ctx *gin.Context) {
 	if err != nil {
 		fmt.Printf(err.Error())
 		ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
-		ctx.JSON(500, model.Error{Success: false, Error: "something went wrong"})
+		ctx.JSON(500, model.Error{Success: false, Error: ErrSomethingWrong.Error()})
 		return
 	}
 
@@ -155,14 +155,13 @@ func (c *Controller) Authenticate(ctx *gin.Context) {
 // @Produce json
 // @Success 200 {object} model.Success "Успешное выполнение операции"
 // @Failure 400 {object} model.Error "Неудачная авторизация HttpOnly Cookie JWT"
-// @Failure 401 {object} model.Error "Токен JWT отсутствует"
 // @Router /auth [post]
 func (c *Controller) Authorize(ctx *gin.Context) {
 	cookie, err := ctx.Cookie("JWT")
 
 	if err != nil {
 		fmt.Println(err)
-		ctx.JSON(401, model.Error{Success: false, Error: "no token"})
+		ctx.JSON(400, model.Error{Success: false, Error: ErrNotAuthorized.Error()})
 		return
 	}
 
@@ -170,7 +169,7 @@ func (c *Controller) Authorize(ctx *gin.Context) {
 
 	if err != nil {
 		fmt.Println(err)
-		ctx.JSON(400, model.Error{Success: false, Error: "validation failure"})
+		ctx.JSON(400, model.Error{Success: false, Error: ErrNotAuthorized.Error()})
 		return
 	}
 

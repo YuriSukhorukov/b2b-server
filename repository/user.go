@@ -2,11 +2,9 @@ package repository
 
 import (
 	"fmt"
-	"errors"
 	"database/sql"
 	"github.com/jmoiron/sqlx"
 	"github.com/b2b-server/model"
-	// jwt "github.com/dgrijalva/jwt-go"
 )
 
 type UserRepository struct {
@@ -47,16 +45,22 @@ func (r UserRepository) InsertUser(user model.User) (error, *model.Record) {
 	if err != nil {
 		switch err.Error() {
 			case "pq: duplicate key value violates unique constraint \"users_email_key\"":
-			    return errors.New("duplicate email"), nil		    
+			    return ErrDublicateEmail, nil		    
 			default:
 		    	fmt.Println(err.Error())
-			    return errors.New("something wrong"), nil
+			    return ErrSomethingWrong, nil
 		}
 	}
 
+	if err != nil {
+    	return err, nil
+    }
 	for rows.Next() {
    		err = rows.StructScan(&u)
 	}
+	if err != nil {
+    	return err, nil
+    }
 
     return err, &model.Record{u.UserID, u.CreatedOn}
 }
@@ -73,12 +77,14 @@ func (r UserRepository) AuthorizeUser(user model.User) (error, *model.Record) {
     rows, err := r.db.NamedQuery(s, user)
 
     if err != nil {
-    	return err, nil
+    	return ErrSomethingWrong, nil
     }
-
 	for rows.Next() {
    		err = rows.StructScan(&u)
 	}
+	if err != nil {
+    	return ErrUserNotFound, nil
+    }
 
-    return err, &model.Record{u.UserID, u.CreatedOn}
+    return nil, &model.Record{u.UserID, u.CreatedOn}
 }

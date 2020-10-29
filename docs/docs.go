@@ -58,12 +58,6 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }
-                    },
-                    "401": {
-                        "description": "Токен JWT отсутствует",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
                     }
                 }
             }

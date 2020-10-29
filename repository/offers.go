@@ -22,11 +22,15 @@ func (r OfferRepository) InsertOffer(offer model.Offer) (error, *model.Record) {
     `
     rows, err := r.db.NamedQuery(s, offer)
 
+    if err != nil {
+    	return ErrSomethingWrong, nil
+    }
 	for rows.Next() {
-   		err 		= rows.StructScan(&o)
+   		err = rows.StructScan(&o)
 	}
+	if err != nil {
+    	return ErrSomethingWrong, nil
+    }
 
-	record := model.Record{o.OfferID, o.CreatedOn}
-
-	return err, &record
+	return nil, &model.Record{o.OfferID, o.CreatedOn}
 }

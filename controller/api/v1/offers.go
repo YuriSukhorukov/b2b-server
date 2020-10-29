@@ -28,14 +28,14 @@ func (c *Controller) AddOffer(ctx *gin.Context) {
 	cookie, err := ctx.Cookie("JWT")
 	if err != nil {
 		fmt.Println(err)
-		ctx.JSON(401, model.Error{Success: false, Error: "no token"})
+		ctx.JSON(401, model.Error{Success: false, Error: ErrNotAuthorized.Error()})
 		return
 	}
 
 	err, userID := c.JWT.Decode(cookie)
 	if err != nil {
 		fmt.Println(err)
-		ctx.JSON(400, model.Error{Success: false, Error: "validation failure"})
+		ctx.JSON(401, model.Error{Success: false, Error: ErrNotAuthorized.Error()})
 		return
 	}
 
@@ -56,10 +56,10 @@ func (c *Controller) AddOffer(ctx *gin.Context) {
 	err, result := c.OfferRepository.InsertOffer(offer)
 
 	if err := result.Validation(); err != nil {
-		ctx.JSON(400, model.Error{Success: false, Error: "something went wrong"})
+		ctx.JSON(400, model.Error{Success: false, Error: ErrSomethingWrong.Error()})
 		return
 	}
-	
+
 	ctx.JSON(200, result)
 }
 
