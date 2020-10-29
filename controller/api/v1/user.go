@@ -41,7 +41,7 @@ func (c *Controller) EmailFree(ctx *gin.Context) {
 // @Produce json
 // @Param email header string true "Email"
 // @Param password header string true "Password"
-// @Success 201 {object} model.Record "Успешное выполнение операции"
+// @Success 201 {object} model.Created "Успешное выполнение операции"
 // @Failure 400 {object} model.Error "Email занят для регистрации"
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /signup [post]
@@ -80,7 +80,7 @@ func (c *Controller) AddUser(ctx *gin.Context) {
 // @Produce json
 // @Param email header string true "Email"
 // @Param password header string true "Password"
-// @Success 200 {object} model.Record "Успешное выполнение операции"
+// @Success 200 {object} model.Created "Успешное выполнение операции"
 // @Failure 400 {object} model.Error "Неверный Email или Password"
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /signin [post]

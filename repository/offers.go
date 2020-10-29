@@ -13,7 +13,7 @@ func NewOfferRepository(db *sqlx.DB) *OfferRepository {
 	return &OfferRepository{db}
 }
 
-func (r OfferRepository) InsertOffer(offer model.Offer) (error, *model.Record) {
+func (r OfferRepository) InsertOffer(offer model.Offer) (error, *model.Created) {
 	o := model.Offer{}
 	s := `
         INSERT INTO offers(user_id, title, description, price, amount, currency_code, offer_type, measure_unit_code, date_expires, country, city) 
@@ -32,5 +32,5 @@ func (r OfferRepository) InsertOffer(offer model.Offer) (error, *model.Record) {
     	return ErrSomethingWrong, nil
     }
 
-	return nil, &model.Record{o.OfferID, o.CreatedOn}
+	return nil, &model.Created{o.OfferID, o.CreatedOn}
 }

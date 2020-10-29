@@ -33,7 +33,7 @@ func (r UserRepository) IsEmailFree(email string) (error, bool) {
 	return err, false
 }
 
-func (r UserRepository) InsertUser(user model.User) (error, *model.Record) {
+func (r UserRepository) InsertUser(user model.User) (error, *model.Created) {
     u := model.User{}
     s := `
         INSERT INTO users(email, password) 
@@ -62,10 +62,10 @@ func (r UserRepository) InsertUser(user model.User) (error, *model.Record) {
     	return err, nil
     }
 
-    return err, &model.Record{u.UserID, u.CreatedOn}
+    return err, &model.Created{u.UserID, u.CreatedOn}
 }
 
-func (r UserRepository) AuthorizeUser(user model.User) (error, *model.Record) {
+func (r UserRepository) AuthorizeUser(user model.User) (error, *model.Created) {
 	u := model.User{}
     s := `
         SELECT user_id, created_on 
@@ -86,5 +86,5 @@ func (r UserRepository) AuthorizeUser(user model.User) (error, *model.Record) {
     	return ErrUserNotFound, nil
     }
 
-    return nil, &model.Record{u.UserID, u.CreatedOn}
+    return nil, &model.Created{u.UserID, u.CreatedOn}
 }

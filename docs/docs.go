@@ -139,7 +139,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.Record"
+                                "$ref": "#/definitions/model.Created"
                             }
                         }
                     },
@@ -202,7 +202,7 @@ var doc = `{
                     "200": {
                         "description": "Успешное выполнение операции",
                         "schema": {
-                            "$ref": "#/definitions/model.Record"
+                            "$ref": "#/definitions/model.Created"
                         }
                     },
                     "400": {
@@ -282,7 +282,7 @@ var doc = `{
                     "201": {
                         "description": "Успешное выполнение операции",
                         "schema": {
-                            "$ref": "#/definitions/model.Record"
+                            "$ref": "#/definitions/model.Created"
                         }
                     },
                     "400": {
@@ -302,6 +302,19 @@ var doc = `{
         }
     },
     "definitions": {
+        "model.Created": {
+            "type": "object",
+            "properties": {
+                "created_on": {
+                    "type": "string",
+                    "example": "2020-10-23 18:02:35.745565"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
+                }
+            }
+        },
         "model.Error": {
             "type": "object",
             "properties": {
@@ -381,19 +394,6 @@ var doc = `{
                 "user_id": {
                     "type": "string",
                     "format": "string",
-                    "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
-                }
-            }
-        },
-        "model.Record": {
-            "type": "object",
-            "properties": {
-                "created_on": {
-                    "type": "string",
-                    "example": "2020-10-23 18:02:35.745565"
-                },
-                "id": {
-                    "type": "string",
                     "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
                 }
             }

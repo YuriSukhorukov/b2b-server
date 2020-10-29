@@ -11,7 +11,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param offer body model.Offer true "Offer"
-// @Success 201 {array} model.Record "Успешное выполнение операции"
+// @Success 201 {array} model.Created "Успешное выполнение операции"
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /offers [post]
 func (c *Controller) AddOffer(ctx *gin.Context) {
