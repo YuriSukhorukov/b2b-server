@@ -35,14 +35,14 @@ func (r UserRepository) IsEmailFree(email string) (error, bool) {
 	return err, false
 }
 
-func (r UserRepository) InsertUser(email string, password string) (error, *model.Record) {
-    m := model.User{}
+func (r UserRepository) InsertUser(user model.User) (error, *model.Record) {
+    u := model.User{}
     s := `
         INSERT INTO users(email, password) 
-        VALUES ($1, $2)
+        VALUES (:email, :password)
         RETURNING user_id, email, created_on;
     `
-    rows, err := r.db.Queryx(s, email, password)
+    rows, err := r.db.NamedQuery(s, user)
 
 	if err != nil {
 		switch err.Error() {
@@ -54,33 +54,31 @@ func (r UserRepository) InsertUser(email string, password string) (error, *model
 		}
 	}
 
-	records := make([]model.Record, 0)
-
 	for rows.Next() {
-   		err 		= rows.StructScan(&m)
-   		records 	= append(records, model.Record{m.UserID, m.CreatedOn})
+   		err = rows.StructScan(&u)
 	}
 
-    return err, &records[0]
+    return err, &model.Record{u.UserID, u.CreatedOn}
 }
 
-func (r UserRepository) AuthorizeUser(email string, password string) (error, *model.User) {
-	m := model.User{}
+func (r UserRepository) AuthorizeUser(user model.User) (error, *model.Record) {
+	u := model.User{}
     s := `
-        SELECT user_id, email, created_on 
+        SELECT user_id, created_on 
         FROM users
-        WHERE email = $1
-        AND password = $2
+        WHERE email = :email
+        AND password = :password
         ORDER BY user_id ASC;
     `
-    err := r.db.Get(&m, s, email, password)
+    rows, err := r.db.NamedQuery(s, user)
 
-    switch err {
-		case nil:
-		    return nil, &m
-		case sql.ErrNoRows:
-		    return nil, nil
+    if err != nil {
+    	return err, nil
+    }
+
+	for rows.Next() {
+   		err = rows.StructScan(&u)
 	}
 
-	return err, nil
+    return err, &model.Record{u.UserID, u.CreatedOn}
 }

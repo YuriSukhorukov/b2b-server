@@ -95,9 +95,9 @@ func main() {
 		auth := v1.Group("")
 		{
 			auth.GET("email_free/:email", c.EmailFree)
-			auth.POST("signup", c.SignUp)
-			auth.POST("signin", c.SignIn)
-			auth.POST("auth", c.Auth)
+			auth.POST("signup", c.AddUser)
+			auth.POST("signin", c.Authenticate)
+			auth.POST("auth", c.Authorize)
 			auth.DELETE("signout", c.SignOut)
 		}
 		offers := v1.Group("/offers")

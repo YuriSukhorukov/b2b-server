@@ -54,6 +54,12 @@ func (c *Controller) AddOffer(ctx *gin.Context) {
 	}
 
 	err, result := c.OfferRepository.InsertOffer(offer)
+
+	if err := result.Validation(); err != nil {
+		ctx.JSON(400, model.Error{Success: false, Error: "something went wrong"})
+		return
+	}
+	
 	ctx.JSON(200, result)
 }
 

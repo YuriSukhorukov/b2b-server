@@ -45,33 +45,34 @@ func (c *Controller) EmailFree(ctx *gin.Context) {
 // @Failure 400 {object} model.Error "Email занят для регистрации"
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /signup [post]
-func (c *Controller) SignUp(ctx *gin.Context) {
-	h 		:= model.AuthHeader{}
-	err 	:= ctx.ShouldBindHeader(&h); 
-	if err != nil {
-		ctx.JSON(200, model.Error{Success: false, Error: err.Error()})
+func (c *Controller) AddUser(ctx *gin.Context) {
+	var addUser model.AddUser
+	if err := ctx.ShouldBindHeader(&addUser); err != nil {
+		ctx.JSON(400, model.Error{Success: false, Error: err.Error()})
+		return
+	}
+	if err := addUser.Validation(); err != nil {
+		ctx.JSON(400, model.Error{Success: false, Error: err.Error()})
+		return
 	}
 
-	e := h.Email
-	p := h.Password
-	err, result := c.UserRepository.InsertUser(e, p)
+	user := model.User{
+		Email: addUser.Email,
+		Password: addUser.Password,
+	}
+
+	err, result := c.UserRepository.InsertUser(user)
 
 	if err != nil {
-		switch err.Error() {
-			case "duplicate email":
-				ctx.JSON(400, model.Error{Success: false, Error: err.Error()})
-				return
-			case "something wrong":
-				ctx.JSON(500, model.Error{Success: false, Error: err.Error()})
-				fmt.Printf(err.Error())
-				return
-		}
+		fmt.Println(err)
+		ctx.JSON(500, model.Error{Success: false, Error: err.Error()})
+		return
 	}
 
 	ctx.JSON(200, result)
 }
 
-// SignIn godoc
+// Authenticate godoc
 // @Summary Добавляет HttpOnly Cookie JWT пользователя
 // @Description Возвращает результат операции создания HttpOnly Cookie JWT пользователя при авторизации
 // @Tags auth
@@ -79,22 +80,36 @@ func (c *Controller) SignUp(ctx *gin.Context) {
 // @Produce json
 // @Param email header string true "Email"
 // @Param password header string true "Password"
-// @Success 200 {object} model.Success "Успешное выполнение операции"
+// @Success 200 {object} model.Record "Успешное выполнение операции"
 // @Failure 400 {object} model.Error "Неверный Email или Password"
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /signin [post]
-func (c *Controller) SignIn(ctx *gin.Context) {
-	h := model.AuthHeader{}
+func (c *Controller) Authenticate(ctx *gin.Context) {
+	// h := model.AuthUser{}
+	var authUser model.AuthUser
 
-	if err := ctx.ShouldBindHeader(&h); err != nil {
+	if err := ctx.ShouldBindHeader(&authUser); err != nil {
 		ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
 		ctx.JSON(500, model.Error{Success: false, Error: err.Error()})
 		return
 	}
 
-	e := h.Email
-	p := h.Password
-	err, result := c.UserRepository.AuthorizeUser(e, p)
+	if err := authUser.Validation(); err != nil {
+		ctx.JSON(400, model.Error{Success: false, Error: err.Error()})
+		return
+	}
+
+	user := model.User{
+		Email: authUser.Email,
+		Password: authUser.Password,
+	}
+
+	err, result := c.UserRepository.AuthorizeUser(user)
+
+	if err := result.Validation(); err != nil {
+		ctx.JSON(400, model.Error{Success: false, Error: "email or password is not correct"})
+		return
+	}
 
 	if err != nil {
 		fmt.Printf(err.Error())
@@ -107,7 +122,7 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 		return
 	}
 
-	err, token := c.JWT.Encode(result.UserID)
+	err, token := c.JWT.Encode(result.ID)
 
 	if err != nil {
 		fmt.Printf(err.Error())
@@ -129,10 +144,10 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 	httpOnly 	:= true
 
 	ctx.SetCookie("JWT", token, maxAge, path, domain, secure, httpOnly)
-	ctx.JSON(200, model.Success{Success: true})
+	ctx.JSON(200, result)
 }
 
-// Auth godoc
+// Authorize godoc
 // @Summary Авторизация пользователя проверкой HttpOnly Cookie JWT
 // @Description Возвращает результат операции авторизации HttpOnly Cookie JWT пользователя
 // @Tags auth
@@ -142,7 +157,7 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 // @Failure 400 {object} model.Error "Неудачная авторизация HttpOnly Cookie JWT"
 // @Failure 401 {object} model.Error "Токен JWT отсутствует"
 // @Router /auth [post]
-func (c *Controller) Auth(ctx *gin.Context) {
+func (c *Controller) Authorize(ctx *gin.Context) {
 	cookie, err := ctx.Cookie("JWT")
 
 	if err != nil {

@@ -208,7 +208,7 @@ var doc = `{
                     "200": {
                         "description": "Успешное выполнение операции",
                         "schema": {
-                            "$ref": "#/definitions/model.Success"
+                            "$ref": "#/definitions/model.Record"
                         }
                     },
                     "400": {
