@@ -14,19 +14,19 @@ import (
 // @Produce json
 // @Param email path string true "Email"
 // @Success 200 {object} model.Success "Email свободен для регистрации"
-// @Success 400 {object} model.Error "Email занят для регистрации"
+// @Failure 400 {object} model.Error "Email занят для регистрации"
 // @Failure 500 {object} model.Error "Ошибка сервера"
-// @Router /auth/email_free/{email} [get]
+// @Router /email_free/{email} [get]
 func (c *Controller) EmailFree(ctx *gin.Context) {
 	email 				:= ctx.Param("email")
 	err, result 		:= c.UserRepository.IsEmailFree(email)
 	
 	if err != nil {
 		fmt.Printf(err.Error())
-		ctx.JSON(500, model.Error{Success: false, Error: "something went wrong"})
+		ctx.JSON(500, model.Error{Success: false, Error: ErrSomethingWrong.Error()})
 		return
 	} else if result != true {
-		ctx.JSON(400, model.Error{Success: false, Error: "email is not available"})
+		ctx.JSON(400, model.Error{Success: false, Error: ErrEmailNowAvailable.Error()})
 		return
 	}
 
@@ -41,37 +41,38 @@ func (c *Controller) EmailFree(ctx *gin.Context) {
 // @Produce json
 // @Param email header string true "Email"
 // @Param password header string true "Password"
-// @Success 201 {array} model.Record "Успешное выполнение операции"
-// @Success 400 {object} model.Error "Email занят для регистрации"
+// @Success 201 {object} model.Created "Успешное выполнение операции"
+// @Failure 400 {object} model.Error "Email занят для регистрации"
 // @Failure 500 {object} model.Error "Ошибка сервера"
-// @Router /auth/signup [post]
-func (c *Controller) SignUp(ctx *gin.Context) {
-	h 		:= model.AuthHeader{}
-	err 	:= ctx.ShouldBindHeader(&h); 
-	if err != nil {
-		ctx.JSON(200, model.Error{Success: false, Error: err.Error()})
+// @Router /signup [post]
+func (c *Controller) AddUser(ctx *gin.Context) {
+	var addUser model.AddUser
+	if err := ctx.ShouldBindHeader(&addUser); err != nil {
+		ctx.JSON(400, model.Error{Success: false, Error: err.Error()})
+		return
+	}
+	if err := addUser.Validation(); err != nil {
+		ctx.JSON(400, model.Error{Success: false, Error: err.Error()})
+		return
 	}
 
-	e := h.Email
-	p := h.Password
-	err, result := c.UserRepository.InsertUser(e, p)
+	user := model.User{
+		Email: addUser.Email,
+		Password: addUser.Password,
+	}
+
+	err, result := c.UserRepository.InsertUser(user)
 
 	if err != nil {
-		switch err.Error() {
-			case "duplicate email":
-				ctx.JSON(400, model.Error{Success: false, Error: err.Error()})
-				return
-			case "something wrong":
-				ctx.JSON(500, model.Error{Success: false, Error: err.Error()})
-				fmt.Printf(err.Error())
-				return
-		}
+		fmt.Println(err)
+		ctx.JSON(500, model.Error{Success: false, Error: err.Error()})
+		return
 	}
 
 	ctx.JSON(200, result)
 }
 
-// SignIn godoc
+// Authenticate godoc
 // @Summary Добавляет HttpOnly Cookie JWT пользователя
 // @Description Возвращает результат операции создания HttpOnly Cookie JWT пользователя при авторизации
 // @Tags auth
@@ -79,40 +80,54 @@ func (c *Controller) SignUp(ctx *gin.Context) {
 // @Produce json
 // @Param email header string true "Email"
 // @Param password header string true "Password"
-// @Success 200 {object} model.Success "Успешное выполнение операции"
-// @Success 400 {object} model.Error "Неверный Email или Password"
+// @Success 200 {object} model.Created "Успешное выполнение операции"
+// @Failure 400 {object} model.Error "Неверный Email или Password"
 // @Failure 500 {object} model.Error "Ошибка сервера"
-// @Router /auth/signin [post]
-func (c *Controller) SignIn(ctx *gin.Context) {
-	h := model.AuthHeader{}
+// @Router /signin [post]
+func (c *Controller) Authenticate(ctx *gin.Context) {
+	// h := model.AuthUser{}
+	var authUser model.AuthUser
 
-	if err := ctx.ShouldBindHeader(&h); err != nil {
+	if err := ctx.ShouldBindHeader(&authUser); err != nil {
 		ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
 		ctx.JSON(500, model.Error{Success: false, Error: err.Error()})
 		return
 	}
 
-	e := h.Email
-	p := h.Password
-	err, result := c.UserRepository.AuthorizeUser(e, p)
-
-	if err != nil {
-		fmt.Printf(err.Error())
-		ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
-		ctx.JSON(500, model.Error{Success: false, Error: "something went wrong"})
-		return
-	} else if result == nil {
-		ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
-		ctx.JSON(400, model.Error{Success: false, Error: "email or password is not correct"})
+	if err := authUser.Validation(); err != nil {
+		ctx.JSON(400, model.Error{Success: false, Error: err.Error()})
 		return
 	}
 
-	err, token := c.JWT.Encode(result.UserID)
+	user := model.User{
+		Email: authUser.Email,
+		Password: authUser.Password,
+	}
+
+	err, result := c.UserRepository.AuthorizeUser(user)
+
+	if err := result.Validation(); err != nil {
+		ctx.JSON(400, model.Error{Success: false, Error: ErrEmailOrPasswordNotCorrect.Error()})
+		return
+	}
 
 	if err != nil {
 		fmt.Printf(err.Error())
 		ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
-		ctx.JSON(500, model.Error{Success: false, Error: "something went wrong"})
+		ctx.JSON(500, model.Error{Success: false, Error: ErrSomethingWrong.Error()})
+		return
+	} else if result == nil {
+		ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
+		ctx.JSON(400, model.Error{Success: false, Error: ErrEmailOrPasswordNotCorrect.Error()})
+		return
+	}
+
+	err, token := c.JWT.Encode(result.ID)
+
+	if err != nil {
+		fmt.Printf(err.Error())
+		ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
+		ctx.JSON(500, model.Error{Success: false, Error: ErrSomethingWrong.Error()})
 		return
 	}
 
@@ -129,25 +144,24 @@ func (c *Controller) SignIn(ctx *gin.Context) {
 	httpOnly 	:= true
 
 	ctx.SetCookie("JWT", token, maxAge, path, domain, secure, httpOnly)
-	ctx.JSON(200, model.Success{Success: true})
+	ctx.JSON(200, result)
 }
 
-// Verify godoc
-// @Summary Валидация JWT пользователя
-// @Description Возвращает результат операции валидации HttpOnly Cookie JWT пользователя
+// Authorize godoc
+// @Summary Авторизация пользователя проверкой HttpOnly Cookie JWT
+// @Description Возвращает результат операции авторизации HttpOnly Cookie JWT пользователя
 // @Tags auth
 // @Accept json
 // @Produce json
 // @Success 200 {object} model.Success "Успешное выполнение операции"
-// @Success 400 {object} model.Error "Неудачная валидация HttpOnly Cookie JWT"
-// @Success 401 {object} model.Error "Токен JWT отсутствует"
-// @Router /auth/verify [post]
-func (c *Controller) Verify(ctx *gin.Context) {
+// @Failure 400 {object} model.Error "Неудачная авторизация HttpOnly Cookie JWT"
+// @Router /auth [post]
+func (c *Controller) Authorize(ctx *gin.Context) {
 	cookie, err := ctx.Cookie("JWT")
 
 	if err != nil {
 		fmt.Println(err)
-		ctx.JSON(401, model.Error{Success: false, Error: "no token"})
+		ctx.JSON(400, model.Error{Success: false, Error: ErrNotAuthorized.Error()})
 		return
 	}
 
@@ -155,7 +169,7 @@ func (c *Controller) Verify(ctx *gin.Context) {
 
 	if err != nil {
 		fmt.Println(err)
-		ctx.JSON(400, model.Error{Success: false, Error: "validation failure"})
+		ctx.JSON(400, model.Error{Success: false, Error: ErrNotAuthorized.Error()})
 		return
 	}
 
@@ -170,7 +184,7 @@ func (c *Controller) Verify(ctx *gin.Context) {
 // @Produce json
 // @Success 200 {object} model.Success "Успешное выполнение операции"
 // @Failure 500 {object} model.Error "Ошибка сервера"
-// @Router /auth/signout [delete]
+// @Router /signout [delete]
 func (c *Controller) SignOut(ctx *gin.Context) {
 	ctx.SetCookie("JWT", "", 0, "/", "localhost", true, true)
 	ctx.JSON(200, model.Success{Success: true})

@@ -33,7 +33,36 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/email_free/{email}": {
+        "/auth": {
+            "post": {
+                "description": "Возвращает результат операции авторизации HttpOnly Cookie JWT пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Авторизация пользователя проверкой HttpOnly Cookie JWT",
+                "responses": {
+                    "200": {
+                        "description": "Успешное выполнение операции",
+                        "schema": {
+                            "$ref": "#/definitions/model.Success"
+                        }
+                    },
+                    "400": {
+                        "description": "Неудачная авторизация HttpOnly Cookie JWT",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/email_free/{email}": {
             "get": {
                 "description": "Возвращает результат проверки доступности e-mail для регистрации",
                 "consumes": [
@@ -77,7 +106,70 @@ var doc = `{
                 }
             }
         },
-        "/auth/signin": {
+        "/offers": {
+            "get": {
+                "tags": [
+                    "offers"
+                ]
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "offers"
+                ],
+                "parameters": [
+                    {
+                        "description": "Offer",
+                        "name": "offer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Offer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Успешное выполнение операции",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Created"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/offers/{id}": {
+            "get": {
+                "tags": [
+                    "offers"
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "offers"
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "offers"
+                ]
+            }
+        },
+        "/signin": {
             "post": {
                 "description": "Возвращает результат операции создания HttpOnly Cookie JWT пользователя при авторизации",
                 "consumes": [
@@ -110,7 +202,7 @@ var doc = `{
                     "200": {
                         "description": "Успешное выполнение операции",
                         "schema": {
-                            "$ref": "#/definitions/model.Success"
+                            "$ref": "#/definitions/model.Created"
                         }
                     },
                     "400": {
@@ -128,7 +220,7 @@ var doc = `{
                 }
             }
         },
-        "/auth/signout": {
+        "/signout": {
             "delete": {
                 "description": "Возвращает результат операции удаления HttpOnly Cookie JWT пользователя",
                 "consumes": [
@@ -157,7 +249,7 @@ var doc = `{
                 }
             }
         },
-        "/auth/signup": {
+        "/signup": {
             "post": {
                 "description": "Возвращает результат операции добавленя нового пользователя",
                 "consumes": [
@@ -190,10 +282,7 @@ var doc = `{
                     "201": {
                         "description": "Успешное выполнение операции",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.Record"
-                            }
+                            "$ref": "#/definitions/model.Created"
                         }
                     },
                     "400": {
@@ -210,44 +299,22 @@ var doc = `{
                     }
                 }
             }
-        },
-        "/auth/verify": {
-            "post": {
-                "description": "Возвращает результат операции валидации HttpOnly Cookie JWT пользователя",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Валидация JWT пользователя",
-                "responses": {
-                    "200": {
-                        "description": "Успешное выполнение операции",
-                        "schema": {
-                            "$ref": "#/definitions/model.Success"
-                        }
-                    },
-                    "400": {
-                        "description": "Неудачная валидация HttpOnly Cookie JWT",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    },
-                    "401": {
-                        "description": "Токен JWT отсутствует",
-                        "schema": {
-                            "$ref": "#/definitions/model.Error"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
+        "model.Created": {
+            "type": "object",
+            "properties": {
+                "created_on": {
+                    "type": "string",
+                    "example": "2020-10-23 18:02:35.745565"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
+                }
+            }
+        },
         "model.Error": {
             "type": "object",
             "properties": {
@@ -261,15 +328,72 @@ var doc = `{
                 }
             }
         },
-        "model.Record": {
+        "model.Offer": {
             "type": "object",
             "properties": {
+                "amount": {
+                    "type": "string",
+                    "format": "int",
+                    "example": "100"
+                },
+                "city": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "Москва"
+                },
+                "country": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "Российская Федерация"
+                },
                 "created_on": {
                     "type": "string",
-                    "example": "2020-10-23 18:02:35.745565"
+                    "format": "string",
+                    "example": "2020-10-28T14:58:56.059Z"
                 },
-                "id": {
+                "currency_code": {
                     "type": "string",
+                    "format": "string",
+                    "example": "RUB"
+                },
+                "date_expires": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "2020-10-28T14:58:56.059Z"
+                },
+                "description": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "Оригинальная сгущенка Рогачев"
+                },
+                "measure_unit_code": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "KG"
+                },
+                "offer_id": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
+                },
+                "offer_type": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "BUY"
+                },
+                "price": {
+                    "type": "string",
+                    "format": "int",
+                    "example": "1000000"
+                },
+                "title": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "Сгущенка"
+                },
+                "user_id": {
+                    "type": "string",
+                    "format": "string",
                     "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
                 }
             }

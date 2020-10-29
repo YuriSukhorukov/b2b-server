@@ -11,7 +11,6 @@ import (
 	"github.com/b2b-server/service"
 	"github.com/b2b-server/repository"
 	"os"
-	"github.com/joho/godotenv"
 	"fmt"
 	"strconv"
 )
@@ -59,12 +58,6 @@ import (
 // @scope.admin Grants read and write access to administrative information
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Print(err)
-		os.Exit(2)
-	}
-
 	signKey 			:= os.Getenv("PRIVATE_KEY")
 	verifyKey 			:= os.Getenv("PUBLIC_KEY")
 
@@ -99,13 +92,21 @@ func main() {
 
 	v1 := g.Group("/api/v1") 
 	{
-		auth := v1.Group("/auth")
+		auth := v1.Group("")
 		{
 			auth.GET("email_free/:email", c.EmailFree)
-			auth.POST("signup", c.SignUp)
-			auth.POST("signin", c.SignIn)
-			auth.POST("verify", c.Verify)
+			auth.POST("signup", c.AddUser)
+			auth.POST("signin", c.Authenticate)
+			auth.POST("auth", c.Authorize)
 			auth.DELETE("signout", c.SignOut)
+		}
+		offers := v1.Group("/offers")
+		{
+			offers.GET(":id", c.ShowOffer)
+			offers.GET("", c.ListOffers)
+			offers.POST("", c.AddOffer)
+			offers.PATCH(":id", c.UpdateOffer)
+			offers.DELETE(":id", c.DeleteOffer)
 		}
 	}
 
