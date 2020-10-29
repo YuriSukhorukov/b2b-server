@@ -107,6 +107,11 @@ func main() {
 			offers.POST("", c.AddOffer)
 			offers.PATCH(":id", c.UpdateOffer)
 			offers.DELETE(":id", c.DeleteOffer)
+			proposals := offers.Group(":id/proposals")
+			{
+				proposals.GET("", c.ShowProposal)
+				proposals.POST("", c.AddProposal)
+			}
 		}
 	}
 
