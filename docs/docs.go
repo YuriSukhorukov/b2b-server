@@ -35,6 +35,11 @@ var doc = `{
     "paths": {
         "/auth": {
             "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
                 "description": "Возвращает результат операции авторизации HttpOnly Cookie JWT пользователя",
                 "consumes": [
                     "application/json"
