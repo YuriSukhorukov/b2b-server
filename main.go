@@ -86,9 +86,10 @@ func main() {
 	
 	users 		:= repository.NewUserRepository(psgql)
 	offers		:= repository.NewOfferRepository(psgql)
+	proposals	:= repository.NewProposalRepository(psgql)
 
 	g 			:= gin.Default()
-	c 			:= controller.NewController(*jwt, *users, *offers)
+	c 			:= controller.NewController(*jwt, *users, *offers, *proposals)
 
 	v1 := g.Group("/api/v1") 
 	{

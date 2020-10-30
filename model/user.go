@@ -1,7 +1,5 @@
 package model
 
-import "errors"
-
 type AddUser struct {
 	Email   	string  `json:"email" example:"my_email@gmail.com" format:"string" header:"email"`
 	Password 	string 	`json:"password" example:"pa!ssvv0rD" format:"string" header:"password"`
@@ -11,11 +9,6 @@ type AuthUser struct {
 	Email   	string 	`db:"email" json:"email" example:"my_email@gmail.com" format:"string" header:"email"`
 	Password 	string 	`db:"password" json:"password" example:"pa!ssvv0rD" format:"string" header:"password"`
 }
-
-var (
-	ErrEmailInvalid = errors.New("email is empty")
-	ErrPasswordInvalid = errors.New("password is empty")
-)
 
 func (a AddUser) Validation() error {
 	switch {
