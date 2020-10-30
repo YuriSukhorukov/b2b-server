@@ -93,7 +93,6 @@ func main() {
 	c 			:= controller.NewController(*jwt, *users, *offers, *proposals)
 
 	v1 := g.Group("/api/v1")
-	v1.Use(middleware.BasicAuthApi)
 	{
 		auth := v1.Group("")
 		{
