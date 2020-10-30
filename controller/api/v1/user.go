@@ -148,6 +148,7 @@ func (c *Controller) Authenticate(ctx *gin.Context) {
 }
 
 // Authorize godoc
+// @Security BasicAuth
 // @Summary Авторизация пользователя проверкой HttpOnly Cookie JWT
 // @Description Возвращает результат операции авторизации HttpOnly Cookie JWT пользователя
 // @Tags auth

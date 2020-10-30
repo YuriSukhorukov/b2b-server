@@ -10,11 +10,12 @@ type Controller struct {
 	JWT 				service.JWT
 	UserRepository 		repository.UserRepository
 	OfferRepository 	repository.OfferRepository
+	ProposalRepository 	repository.ProposalRepository
 }
 
 // NewController example
-func NewController(jwt service.JWT, ur repository.UserRepository, or repository.OfferRepository) *Controller {
-	return &Controller{jwt, ur, or}
+func NewController(jwt service.JWT, ur repository.UserRepository, or repository.OfferRepository, pr repository.ProposalRepository) *Controller {
+	return &Controller{jwt, ur, or, pr}
 }
 
 // Message example

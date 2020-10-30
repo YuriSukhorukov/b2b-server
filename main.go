@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/b2b-server/middleware"
 	"github.com/b2b-server/controller/api/v1"
 
 	_ "github.com/b2b-server/docs"
@@ -86,11 +87,13 @@ func main() {
 	
 	users 		:= repository.NewUserRepository(psgql)
 	offers		:= repository.NewOfferRepository(psgql)
+	proposals	:= repository.NewProposalRepository(psgql)
 
 	g 			:= gin.Default()
-	c 			:= controller.NewController(*jwt, *users, *offers)
+	c 			:= controller.NewController(*jwt, *users, *offers, *proposals)
 
-	v1 := g.Group("/api/v1") 
+	v1 := g.Group("/api/v1")
+	v1.Use(middleware.BasicAuthApi)
 	{
 		auth := v1.Group("")
 		{
@@ -107,9 +110,21 @@ func main() {
 			offers.POST("", c.AddOffer)
 			offers.PATCH(":id", c.UpdateOffer)
 			offers.DELETE(":id", c.DeleteOffer)
+			proposals := offers.Group(":id/proposals")
+			{
+				proposals.GET("", c.ShowProposal)
+				proposals.POST("", c.AddProposal)
+			}
 		}
 	}
+	swagger := g.Group("/swagger")
+	swagger.Use(middleware.BasicAuthSwag)
+	{
+		swagger.GET("*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
 
-	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	g.Use(gin.Logger())
+	g.Use(gin.Recovery())
+
 	g.Run(":8080")
 }

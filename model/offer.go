@@ -1,7 +1,5 @@
 package model
 
-import "errors"
-
 type AddOffer struct {
 	Title   			string    	`db:"title" json:"title" example:"Сгущенка" format:"string"`
 	Description 		string 		`db:"description" json:"description" example:"Оригинальная сгущенка Рогачев" format:"string"`
@@ -14,19 +12,6 @@ type AddOffer struct {
 	Country 			string 		`db:"country" json:"country" example:"Российская Федерация" format:"string"`
 	City 				string 		`db:"city" json:"city" example:"Москва" format:"string"`
 }
-
-var (
-	ErrTitleInvalid = errors.New("title is empty")
-	ErrDescriptionInvalid = errors.New("description is empty")
-	ErrPriceInvalid = errors.New("price is empty")
-	ErrAmountInvalid = errors.New("amount is empty")
-	ErrCurrencyCodeInvalid = errors.New("currencyCode is empty")
-	ErrOfferTypeInvalid = errors.New("offerType is empty")
-	ErrMeasureUnitCodeInvalid = errors.New("measureUnitCode is empty")
-	ErrDateExpiresInvalid = errors.New("dateExpires is empty")
-	ErrCountryInvalid = errors.New("country is empty")
-	ErrCityInvalid = errors.New("city is empty")
-)
 
 func (a AddOffer) Validation() error {
 	switch {
