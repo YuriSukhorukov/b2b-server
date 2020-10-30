@@ -1,0 +1,13 @@
+package constant
+
+const (
+	MEASURE_UNIT_CODE_TON 				= "BUY"
+	MEASURE_UNIT_CODE_KILOGRAM 			= "SELL"
+	MEASURE_UNIT_CODE_GRAM            	= "GM"
+	MEASURE_UNIT_CODE_SQUARE_METER    	= "M2"
+	MEASURE_UNIT_CODE_LITER           	= "L"
+	MEASURE_UNIT_CODE_METER           	= "M"
+	MEASURE_UNIT_CODE_THING           	= "TH"
+	MEASURE_UNIT_CODE_CUBIC_METER     	= "M3"
+	MEASURE_UNIT_CODE_PACK            	= "PKG"
+)

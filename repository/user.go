@@ -2,11 +2,9 @@ package repository
 
 import (
 	"fmt"
-	"errors"
 	"database/sql"
 	"github.com/jmoiron/sqlx"
 	"github.com/b2b-server/model"
-	// jwt "github.com/dgrijalva/jwt-go"
 )
 
 type UserRepository struct {
@@ -35,52 +33,58 @@ func (r UserRepository) IsEmailFree(email string) (error, bool) {
 	return err, false
 }
 
-func (r UserRepository) InsertUser(email string, password string) (error, []model.Record) {
-    m := model.User{}
+func (r UserRepository) InsertUser(user model.User) (error, *model.Created) {
+    u := model.User{}
     s := `
         INSERT INTO users(email, password) 
-        VALUES ($1, $2)
+        VALUES (:email, :password)
         RETURNING user_id, email, created_on;
     `
-    rows, err := r.db.Queryx(s, email, password)
+    rows, err := r.db.NamedQuery(s, user)
 
 	if err != nil {
 		switch err.Error() {
 			case "pq: duplicate key value violates unique constraint \"users_email_key\"":
-			    return errors.New("duplicate email"), nil
-		    default:
+			    return ErrDublicateEmail, nil		    
+			default:
 		    	fmt.Println(err.Error())
-			    return errors.New("something wrong"), nil
+			    return ErrSomethingWrong, nil
 		}
 	}
 
-	records := make([]model.Record, 0)
-
+	if err != nil {
+    	return err, nil
+    }
 	for rows.Next() {
-   		err 		= rows.StructScan(&m)
-   		records 	= append(records, model.Record{m.UserID, m.CreatedOn})
+   		err = rows.StructScan(&u)
 	}
+	if err != nil {
+    	return err, nil
+    }
 
-    return err, records
+    return err, &model.Created{u.UserID, u.CreatedOn}
 }
 
-func (r UserRepository) AuthorizeUser(email string, password string) (error, *model.User) {
-	m := model.User{}
+func (r UserRepository) AuthorizeUser(user model.User) (error, *model.Created) {
+	u := model.User{}
     s := `
-        SELECT user_id, email, created_on 
+        SELECT user_id, created_on 
         FROM users
-        WHERE email = $1
-        AND password = $2
+        WHERE email = :email
+        AND password = :password
         ORDER BY user_id ASC;
     `
-    err := r.db.Get(&m, s, email, password)
+    rows, err := r.db.NamedQuery(s, user)
 
-    switch err {
-		case nil:
-		    return nil, &m
-		case sql.ErrNoRows:
-		    return nil, nil
+    if err != nil {
+    	return ErrSomethingWrong, nil
+    }
+	for rows.Next() {
+   		err = rows.StructScan(&u)
 	}
+	if err != nil {
+    	return ErrUserNotFound, nil
+    }
 
-	return err, nil
+    return nil, &model.Created{u.UserID, u.CreatedOn}
 }
