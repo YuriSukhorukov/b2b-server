@@ -10,16 +10,15 @@ import (
 // @Tags proposals
 // @Accept json
 // @Produce json
-// @Param id path string true "Offer ID"
-// @Param offer body model.Proposal true "Proposal"
+// @Param offerID path string true "Offer ID"
+// @Param offer body model.AddProposal true "Proposal"
 // @Success 201 {array} model.Created "Успешное выполнение операции"
 // @Failure 500 {object} model.Error "Ошибка сервера"
-// @Router /offers/{id}/proposals [post]
+// @Router /offers/{offerID}/proposals [post]
 func (c *Controller) AddProposal(ctx *gin.Context) {
 	var addProposal model.AddProposal
 
-	offerID := ctx.Param("id")
-	fmt.Println(offerID)
+	offerID := ctx.Param("offerID")
 
 	if err := ctx.ShouldBindJSON(&addProposal); err != nil {
 		ctx.JSON(400, model.Error{Success: false, Error: err.Error()})
@@ -65,6 +64,34 @@ func (c *Controller) AddProposal(ctx *gin.Context) {
 	ctx.JSON(200, result)
 }
 
+// ListProposals godoc
+// @Tags proposals
+// @Produce json
+// @Param offerID path string true "Offer ID"
+// @Success 201 {array} model.Proposal "Успешное выполнение операции"
+// @Failure 500 {object} model.Error "Ошибка сервера"
+// @Router /offers/{offerID}/proposals [get]
+func (c *Controller) ListProposals(ctx *gin.Context) {
+	offerID 		:= ctx.Param("offerID")
+	listProposals 	:= model.ListProposals{OfferID: offerID}
+
+	if err := listProposals.Validation(); err != nil {
+		ctx.JSON(400, model.Error{Success: false, Error: err.Error()})
+		return
+	}
+
+	err, result := c.ProposalRepository.ListProposals(listProposals)
+	if err != nil {
+		ctx.JSON(400, model.Error{Success: false, Error: err.Error()})
+		return
+	}
+
+	ctx.JSON(200, result)
+}
+
+// ShowOffer godoc
+// @Tags proposals
+// @Router /offers/{offerID}/proposals/{proposalID} [get]
 func (c *Controller) ShowProposal(ctx *gin.Context) {
 	offerID := ctx.Param("id")
 	ctx.String(200, "ShowProposal: %s", offerID)

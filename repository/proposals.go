@@ -40,3 +40,30 @@ func (r ProposalRepository) InsertProposal(proposal model.Proposal) (error, *mod
 
 	return nil, &model.Created{p.ProposalID, p.CreatedOn}
 }
+
+func (r ProposalRepository) ListProposals(proposal model.ListProposals) (error, *[]model.Proposal) {
+	p := model.Proposal{}
+	s := `
+    	SELECT * FROM proposals
+    	WHERE offer_id = :offer_id
+    	ORDER BY created_on ASC;
+    `
+    rows, err := r.db.NamedQuery(s, proposal)
+
+    if err != nil {
+    	return ErrSomethingWrong, nil
+    }
+
+    var proposals []model.Proposal
+
+    for rows.Next() {
+   		err = rows.StructScan(&p)
+   		proposals = append(proposals, p)
+	}
+
+	if err != nil {
+    	return ErrSomethingWrong, nil
+    }
+
+	return nil, &proposals
+}

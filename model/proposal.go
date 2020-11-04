@@ -1,10 +1,32 @@
 package model
 
 type AddProposal struct {
-	OfferID 	string 		`db:"offer_id" json:"offer_id" example:"1d586b05-7b80-4a3a-bf2c-ce48169d4e85" format:"string"`
+	OfferID 	string 		`db:"offer_id" json:"offer_id" example:"1ac0697f-cf8e-4b3f-880f-249f25e1ea3b" format:"string"`
 }
 
 func (a AddProposal) Validation() error {
+	switch {
+	case len(a.OfferID) == 0:
+		return ErrOfferIDInvalid
+	default:
+		return nil
+	}
+}
+
+type ListProposals struct {
+	OfferID 	string 		`db:"offer_id" json:"offer_id" example:"1d586b05-7b80-4a3a-bf2c-ce48169d4e85" format:"string"`
+}
+
+func (a ListProposals) Validation() error {
+	switch {
+	case len(a.OfferID) == 0:
+		return ErrOfferIDInvalid
+	default:
+		return nil
+	}
+}
+
+func (a Proposal) Validation() error {
 	switch {
 	case len(a.OfferID) == 0:
 		return ErrOfferIDInvalid

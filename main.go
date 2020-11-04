@@ -104,16 +104,17 @@ func main() {
 		}
 		offers := v1.Group("/offers")
 		{
-			offers.GET(":id", c.ShowOffer)
+			offers.GET(":offerID", c.ShowOffer)
 			offers.GET("", c.ListOffers)
 			offers.POST("", c.AddOffer)
-			offers.PATCH(":id", c.UpdateOffer)
-			offers.DELETE(":id", c.DeleteOffer)
+			offers.PATCH(":offerID", c.UpdateOffer)
+			offers.DELETE(":offerID", c.DeleteOffer)
 
 
-			proposals := offers.Group(":id/proposals")
+			proposals := offers.Group(":offerID/proposals")
 			{
-				proposals.GET("", c.ShowProposal)
+				proposals.GET(":proposalID", c.ShowProposal)
+				proposals.GET("", c.ListProposals)
 				proposals.POST("", c.AddProposal)
 			}
 		}

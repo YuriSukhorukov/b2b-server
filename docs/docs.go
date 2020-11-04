@@ -124,12 +124,12 @@ var doc = `{
                 ],
                 "parameters": [
                     {
-                        "description": "Offer",
+                        "description": "AddOffer",
                         "name": "offer",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Offer"
+                            "$ref": "#/definitions/model.AddOffer"
                         }
                     }
                 ],
@@ -152,7 +152,7 @@ var doc = `{
                 }
             }
         },
-        "/offers/{id}": {
+        "/offers/{offerID}": {
             "get": {
                 "tags": [
                     "offers"
@@ -169,7 +169,41 @@ var doc = `{
                 ]
             }
         },
-        "/offers/{id}/proposals": {
+        "/offers/{offerID}/proposals": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "proposals"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Offer ID",
+                        "name": "offerID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Успешное выполнение операции",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Proposal"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            },
             "post": {
                 "consumes": [
                     "application/json"
@@ -184,7 +218,7 @@ var doc = `{
                     {
                         "type": "string",
                         "description": "Offer ID",
-                        "name": "id",
+                        "name": "offerID",
                         "in": "path",
                         "required": true
                     },
@@ -194,7 +228,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Proposal"
+                            "$ref": "#/definitions/model.AddProposal"
                         }
                     }
                 ],
@@ -215,6 +249,13 @@ var doc = `{
                         }
                     }
                 }
+            }
+        },
+        "/offers/{offerID}/proposals/{proposalID}": {
+            "get": {
+                "tags": [
+                    "proposals"
+                ]
             }
         },
         "/signin": {
@@ -350,6 +391,71 @@ var doc = `{
         }
     },
     "definitions": {
+        "model.AddOffer": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "string",
+                    "format": "int",
+                    "example": "100"
+                },
+                "city": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "Москва"
+                },
+                "country": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "Российская Федерация"
+                },
+                "currency_code": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "RUB"
+                },
+                "date_expires": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "2020-10-28T14:58:56.059Z"
+                },
+                "description": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "Оригинальная сгущенка Рогачев"
+                },
+                "measure_unit_code": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "KG"
+                },
+                "offer_type": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "BUY"
+                },
+                "price": {
+                    "type": "string",
+                    "format": "int",
+                    "example": "1000000"
+                },
+                "title": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "Сгущенка"
+                }
+            }
+        },
+        "model.AddProposal": {
+            "type": "object",
+            "properties": {
+                "offer_id": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "1ac0697f-cf8e-4b3f-880f-249f25e1ea3b"
+                }
+            }
+        },
         "model.Created": {
             "type": "object",
             "properties": {
@@ -373,76 +479,6 @@ var doc = `{
                 "success": {
                     "type": "boolean",
                     "example": false
-                }
-            }
-        },
-        "model.Offer": {
-            "type": "object",
-            "properties": {
-                "amount": {
-                    "type": "string",
-                    "format": "int",
-                    "example": "100"
-                },
-                "city": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "Москва"
-                },
-                "country": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "Российская Федерация"
-                },
-                "created_on": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "2020-10-28T14:58:56.059Z"
-                },
-                "currency_code": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "RUB"
-                },
-                "date_expires": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "2020-10-28T14:58:56.059Z"
-                },
-                "description": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "Оригинальная сгущенка Рогачев"
-                },
-                "measure_unit_code": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "KG"
-                },
-                "offer_id": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
-                },
-                "offer_type": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "BUY"
-                },
-                "price": {
-                    "type": "string",
-                    "format": "int",
-                    "example": "1000000"
-                },
-                "title": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "Сгущенка"
-                },
-                "user_id": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
                 }
             }
         },
