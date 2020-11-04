@@ -62,6 +62,25 @@ var doc = `{
                 }
             }
         },
+        "/companies": {
+            "get": {
+                "tags": [
+                    "companies"
+                ]
+            }
+        },
+        "/companies/{companyID}": {
+            "get": {
+                "tags": [
+                    "companies"
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "companies"
+                ]
+            }
+        },
         "/email_free/{email}": {
             "get": {
                 "description": "Возвращает результат проверки доступности e-mail для регистрации",
