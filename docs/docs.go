@@ -169,6 +169,54 @@ var doc = `{
                 ]
             }
         },
+        "/offers/{id}/proposals": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "proposals"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Offer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Proposal",
+                        "name": "offer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Proposal"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Успешное выполнение операции",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Created"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/signin": {
             "post": {
                 "description": "Возвращает результат операции создания HttpOnly Cookie JWT пользователя при авторизации",
@@ -390,6 +438,31 @@ var doc = `{
                     "type": "string",
                     "format": "string",
                     "example": "Сгущенка"
+                },
+                "user_id": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
+                }
+            }
+        },
+        "model.Proposal": {
+            "type": "object",
+            "properties": {
+                "created_on": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "2020-10-28T14:58:56.059Z"
+                },
+                "offer_id": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
+                },
+                "proposal_id": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
                 },
                 "user_id": {
                     "type": "string",

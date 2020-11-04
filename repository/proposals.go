@@ -16,7 +16,15 @@ func NewProposalRepository(db *sqlx.DB) *ProposalRepository {
 func (r ProposalRepository) InsertProposal(proposal model.Proposal) (error, *model.Created) {
 	p := model.Proposal{}
 	s := `
-        
+		INSERT  INTO proposals(user_id, offer_id)
+        SELECT  :user_id, :offer_id
+        WHERE   
+            NOT EXISTS (
+                SELECT FROM offers AS o
+                WHERE  o.offer_id = :offer_id
+                AND    o.user_id = :user_id
+            )
+        RETURNING proposal_id, user_id, offer_id, created_on;
     `
     rows, err := r.db.NamedQuery(s, proposal)
 
@@ -30,5 +38,5 @@ func (r ProposalRepository) InsertProposal(proposal model.Proposal) (error, *mod
     	return ErrSomethingWrong, nil
     }
 
-	return nil, &model.Created{p.OfferID, p.CreatedOn}
+	return nil, &model.Created{p.ProposalID, p.CreatedOn}
 }

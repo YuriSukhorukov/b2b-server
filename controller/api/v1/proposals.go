@@ -6,8 +6,20 @@ import (
 	"github.com/b2b-server/model"
 )
 
+// AddProposal godoc
+// @Tags proposals
+// @Accept json
+// @Produce json
+// @Param id path string true "Offer ID"
+// @Param offer body model.Proposal true "Proposal"
+// @Success 201 {array} model.Created "Успешное выполнение операции"
+// @Failure 500 {object} model.Error "Ошибка сервера"
+// @Router /offers/{id}/proposals [post]
 func (c *Controller) AddProposal(ctx *gin.Context) {
 	var addProposal model.AddProposal
+
+	offerID := ctx.Param("id")
+	fmt.Println(offerID)
 
 	if err := ctx.ShouldBindJSON(&addProposal); err != nil {
 		ctx.JSON(400, model.Error{Success: false, Error: err.Error()})
@@ -34,12 +46,18 @@ func (c *Controller) AddProposal(ctx *gin.Context) {
 
 	proposal := model.Proposal{
 		UserID: userID,
-		OfferID: addProposal.OfferID,
+		OfferID: offerID,
 	}
 
 	err, result := c.ProposalRepository.InsertProposal(proposal)
 
-	if err := result.Validation(); err != nil {
+	if err != nil {
+		ctx.JSON(400, model.Error{Success: false, Error: ErrSomethingWrong.Error()})
+		return
+	}
+
+	err = result.Validation()
+	if err != nil {
 		ctx.JSON(400, model.Error{Success: false, Error: ErrSomethingWrong.Error()})
 		return
 	}
