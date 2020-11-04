@@ -35,7 +35,7 @@ func (c *Controller) EmailFree(ctx *gin.Context) {
 
 // SignUp godoc
 // @Summary Добавляет нового пользователя
-// @Description Возвращает результат операции добавленя нового пользователя
+// @Description Возвращает результат операции добавления нового пользователя
 // @Tags auth
 // @Accept json
 // @Produce json
@@ -148,7 +148,6 @@ func (c *Controller) Authenticate(ctx *gin.Context) {
 }
 
 // Authorize godoc
-// @Security BasicAuth
 // @Summary Авторизация пользователя проверкой HttpOnly Cookie JWT
 // @Description Возвращает результат операции авторизации HttpOnly Cookie JWT пользователя
 // @Tags auth

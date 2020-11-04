@@ -7,10 +7,12 @@ import (
 )
 
 // AddOffer godoc
+// @Summary Добавляет предложение
+// @Description Возвращает результат операции добавления предложения
 // @Tags offers
 // @Accept json
 // @Produce json
-// @Param offer body model.Offer true "Offer"
+// @Param offer body model.AddOffer true "AddOffer"
 // @Success 201 {array} model.Created "Успешное выполнение операции"
 // @Failure 500 {object} model.Error "Ошибка сервера"
 // @Router /offers [post]
@@ -65,7 +67,7 @@ func (c *Controller) AddOffer(ctx *gin.Context) {
 
 // UpdateOffer godoc
 // @Tags offers
-// @Router /offers/{id} [patch]
+// @Router /offers/{offerID} [patch]
 func (c *Controller) UpdateOffer(ctx *gin.Context) {
 	fmt.Println("CreateOffer")
 	ctx.JSON(200, model.Success{Success: true})
@@ -73,7 +75,7 @@ func (c *Controller) UpdateOffer(ctx *gin.Context) {
 
 // DeleteOffer godoc
 // @Tags offers
-// @Router /offers/{id} [delete]
+// @Router /offers/{offerID} [delete]
 func (c *Controller) DeleteOffer(ctx *gin.Context) {
 	fmt.Println("CreateOffer")
 	ctx.JSON(200, model.Success{Success: true})
@@ -81,7 +83,7 @@ func (c *Controller) DeleteOffer(ctx *gin.Context) {
 
 // ShowOffer godoc
 // @Tags offers
-// @Router /offers/{id} [get]
+// @Router /offers/{offerID} [get]
 func (c *Controller) ShowOffer(ctx *gin.Context) {
 	fmt.Println("CreateOffer")
 	ctx.JSON(200, model.Success{Success: true})

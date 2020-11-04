@@ -35,11 +35,6 @@ var doc = `{
     "paths": {
         "/auth": {
             "post": {
-                "security": [
-                    {
-                        "BasicAuth": []
-                    }
-                ],
                 "description": "Возвращает результат операции авторизации HttpOnly Cookie JWT пользователя",
                 "consumes": [
                     "application/json"
@@ -65,6 +60,25 @@ var doc = `{
                         }
                     }
                 }
+            }
+        },
+        "/companies": {
+            "get": {
+                "tags": [
+                    "companies"
+                ]
+            }
+        },
+        "/companies/{companyID}": {
+            "get": {
+                "tags": [
+                    "companies"
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "companies"
+                ]
             }
         },
         "/email_free/{email}": {
@@ -118,6 +132,7 @@ var doc = `{
                 ]
             },
             "post": {
+                "description": "Возвращает результат операции добавления предложения",
                 "consumes": [
                     "application/json"
                 ],
@@ -127,14 +142,15 @@ var doc = `{
                 "tags": [
                     "offers"
                 ],
+                "summary": "Добавляет предложение",
                 "parameters": [
                     {
-                        "description": "Offer",
+                        "description": "AddOffer",
                         "name": "offer",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Offer"
+                            "$ref": "#/definitions/model.AddOffer"
                         }
                     }
                 ],
@@ -157,7 +173,7 @@ var doc = `{
                 }
             }
         },
-        "/offers/{id}": {
+        "/offers/{offerID}": {
             "get": {
                 "tags": [
                     "offers"
@@ -171,6 +187,99 @@ var doc = `{
             "patch": {
                 "tags": [
                     "offers"
+                ]
+            }
+        },
+        "/offers/{offerID}/proposals": {
+            "get": {
+                "description": "Возвращает результат операции получение откликов на предложение",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "proposals"
+                ],
+                "summary": "Возвращает отклики на предложение",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Offer ID",
+                        "name": "offerID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Успешное выполнение операции",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Proposal"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Возвращает результат операции добавления отклика на предложение",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "proposals"
+                ],
+                "summary": "Добавляет отклик на предложение",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Offer ID",
+                        "name": "offerID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Proposal",
+                        "name": "offer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AddProposal"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Успешное выполнение операции",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Created"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/offers/{offerID}/proposals/{proposalID}": {
+            "get": {
+                "tags": [
+                    "proposals"
                 ]
             }
         },
@@ -256,7 +365,7 @@ var doc = `{
         },
         "/signup": {
             "post": {
-                "description": "Возвращает результат операции добавленя нового пользователя",
+                "description": "Возвращает результат операции добавления нового пользователя",
                 "consumes": [
                     "application/json"
                 ],
@@ -307,6 +416,71 @@ var doc = `{
         }
     },
     "definitions": {
+        "model.AddOffer": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "string",
+                    "format": "int",
+                    "example": "100"
+                },
+                "city": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "Москва"
+                },
+                "country": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "Российская Федерация"
+                },
+                "currency_code": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "RUB"
+                },
+                "date_expires": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "2020-10-28T14:58:56.059Z"
+                },
+                "description": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "Оригинальная сгущенка Рогачев"
+                },
+                "measure_unit_code": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "KG"
+                },
+                "offer_type": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "BUY"
+                },
+                "price": {
+                    "type": "string",
+                    "format": "int",
+                    "example": "1000000"
+                },
+                "title": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "Сгущенка"
+                }
+            }
+        },
+        "model.AddProposal": {
+            "type": "object",
+            "properties": {
+                "offer_id": {
+                    "type": "string",
+                    "format": "string",
+                    "example": "1ac0697f-cf8e-4b3f-880f-249f25e1ea3b"
+                }
+            }
+        },
         "model.Created": {
             "type": "object",
             "properties": {
@@ -333,68 +507,23 @@ var doc = `{
                 }
             }
         },
-        "model.Offer": {
+        "model.Proposal": {
             "type": "object",
             "properties": {
-                "amount": {
-                    "type": "string",
-                    "format": "int",
-                    "example": "100"
-                },
-                "city": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "Москва"
-                },
-                "country": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "Российская Федерация"
-                },
                 "created_on": {
                     "type": "string",
                     "format": "string",
                     "example": "2020-10-28T14:58:56.059Z"
-                },
-                "currency_code": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "RUB"
-                },
-                "date_expires": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "2020-10-28T14:58:56.059Z"
-                },
-                "description": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "Оригинальная сгущенка Рогачев"
-                },
-                "measure_unit_code": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "KG"
                 },
                 "offer_id": {
                     "type": "string",
                     "format": "string",
                     "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
                 },
-                "offer_type": {
+                "proposal_id": {
                     "type": "string",
                     "format": "string",
-                    "example": "BUY"
-                },
-                "price": {
-                    "type": "string",
-                    "format": "int",
-                    "example": "1000000"
-                },
-                "title": {
-                    "type": "string",
-                    "format": "string",
-                    "example": "Сгущенка"
+                    "example": "1d586b05-7b80-4a3a-bf2c-ce48169d4e85"
                 },
                 "user_id": {
                     "type": "string",
