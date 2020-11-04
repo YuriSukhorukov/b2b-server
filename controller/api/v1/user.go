@@ -35,7 +35,7 @@ func (c *Controller) EmailFree(ctx *gin.Context) {
 
 // SignUp godoc
 // @Summary Добавляет нового пользователя
-// @Description Возвращает результат операции добавленя нового пользователя
+// @Description Возвращает результат операции добавления нового пользователя
 // @Tags auth
 // @Accept json
 // @Produce json

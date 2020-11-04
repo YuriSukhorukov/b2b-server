@@ -7,6 +7,8 @@ import (
 )
 
 // AddProposal godoc
+// @Summary Добавляет отклик на предложение
+// @Description Возвращает результат операции добавления отклика на предложение
 // @Tags proposals
 // @Accept json
 // @Produce json
@@ -65,6 +67,8 @@ func (c *Controller) AddProposal(ctx *gin.Context) {
 }
 
 // ListProposals godoc
+// @Summary Возвращает отклики на предложение
+// @Description Возвращает результат операции получение откликов на предложение
 // @Tags proposals
 // @Produce json
 // @Param offerID path string true "Offer ID"

@@ -113,6 +113,7 @@ var doc = `{
                 ]
             },
             "post": {
+                "description": "Возвращает результат операции добавления предложения",
                 "consumes": [
                     "application/json"
                 ],
@@ -122,6 +123,7 @@ var doc = `{
                 "tags": [
                     "offers"
                 ],
+                "summary": "Добавляет предложение",
                 "parameters": [
                     {
                         "description": "AddOffer",
@@ -171,12 +173,14 @@ var doc = `{
         },
         "/offers/{offerID}/proposals": {
             "get": {
+                "description": "Возвращает результат операции получение откликов на предложение",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "proposals"
                 ],
+                "summary": "Возвращает отклики на предложение",
                 "parameters": [
                     {
                         "type": "string",
@@ -205,6 +209,7 @@ var doc = `{
                 }
             },
             "post": {
+                "description": "Возвращает результат операции добавления отклика на предложение",
                 "consumes": [
                     "application/json"
                 ],
@@ -214,6 +219,7 @@ var doc = `{
                 "tags": [
                     "proposals"
                 ],
+                "summary": "Добавляет отклик на предложение",
                 "parameters": [
                     {
                         "type": "string",
@@ -340,7 +346,7 @@ var doc = `{
         },
         "/signup": {
             "post": {
-                "description": "Возвращает результат операции добавленя нового пользователя",
+                "description": "Возвращает результат операции добавления нового пользователя",
                 "consumes": [
                     "application/json"
                 ],

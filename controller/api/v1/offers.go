@@ -7,6 +7,8 @@ import (
 )
 
 // AddOffer godoc
+// @Summary Добавляет предложение
+// @Description Возвращает результат операции добавления предложения
 // @Tags offers
 // @Accept json
 // @Produce json
