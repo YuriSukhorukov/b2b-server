@@ -2,5 +2,5 @@
 
 ### b2b-db-postgresql service required 
 
-B2B Marketplace server. 
+**B2B Marketplace server. 
 Swagger API Documentation.
